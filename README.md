@@ -2,6 +2,14 @@
 
 A local web application for reviewing advertisements, exploring fictional consumer profiles, and comparing personalization options against permissions and budgets.
 
+## Project team
+
+49-C is a group academic project maintained collaboratively in this shared repository.
+
+- **Harisankar S** — repository owner.
+- **Upamanyu M** — project collaborator. Improved hosted image OCR and transcript correction handling, aligned campaign permission checks, and added regression coverage. Verified the changes with 83 passing tests and 14 local image cases. [GitHub profile](https://github.com/Upamanyu003) · [Contribution pull request](https://github.com/harisankar-work/personalised-threshold/pull/1)
+- **Risaal K P** — project collaborator.
+
 ## Features
 
 - **Creative analysis:** flags selected privacy references, tracking claims, urgency and pressure tactics in ad copy.
