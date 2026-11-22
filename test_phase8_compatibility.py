@@ -26,7 +26,7 @@ class CompatibilityTests(unittest.TestCase):
         for field in ("compatibility_score", "consumer_relevance_prediction", "consumer_intrusiveness_prediction",
                       "consumer_segment_assignment", "expected_incremental_conversions"):
             self.assertIsNone(result[field])
-        self.assertEqual(strategy["action"], "keep_current_campaign")
+        self.assertEqual(strategy["action"], "hold_for_review")
         self.assertEqual(current_dataset_status()["status"], "insufficient_evidence")
 
     def test_creative_cues_are_not_measured_consumer_response(self):
@@ -61,8 +61,31 @@ class CompatibilityTests(unittest.TestCase):
         self.assertEqual(result["evidence"]["campaign_context"], "marketer_declared_unverified")
         self.assertIsNone(result["compatibility_score"])
 
+    def test_permission_review_reasons_match_campaign_action_and_compatibility(self):
+        generic = {"targeting_method": "generic", "data_source": "none", "audience_eligibility": "yes"}
+        contextual = {"targeting_method": "contextual", "data_source": "page_context", "audience_eligibility": "yes"}
+        for campaign, expected_reason in (
+            ({**generic, "audience_eligibility": "unknown"}, "Confirm audience eligibility."),
+            ({**contextual, "consent_status": "no"}, "Permission for this data use was marked as not granted."),
+            (contextual, "Confirm permission for the declared targeting data."),
+            (generic, None),
+            ({**contextual, "consent_status": "yes"}, None),
+        ):
+            with self.subTest(campaign=campaign):
+                result, strategy = review(campaign)
+                self.assertEqual(result["data_source_review_required"], expected_reason is not None)
+                if expected_reason:
+                    self.assertIn(expected_reason, result["prelaunch_checks"])
+                    self.assertIn(expected_reason, strategy["reason"])
+                    self.assertEqual(strategy["action"], "hold_for_review")
+                    self.assertEqual(strategy["options"][0]["permission_status"], "Hold for review")
+                else:
+                    self.assertEqual(strategy["action"], "keep_current_campaign")
+                    self.assertEqual(strategy["options"][0]["permission_status"], "Declared eligible")
+
     def test_hypothetical_best_case_never_authorizes_variants(self):
         campaign = {"targeting_method": "generic", "data_source": "none", "total_budget": 1000,
+                    "audience_eligibility": "yes",
                     "committed_spend": 500, "variant_cost": 20, "management_cost": 10,
                     "segmentation_cost": 10, "contribution_margin": 40,
                     "best_incremental_conversions": 1000}

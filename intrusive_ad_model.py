@@ -257,44 +257,45 @@ def ocr_image(path: Path) -> dict:
     return _select_ocr_transcript(first, second)
 
 
-def predict(text: str = "", image: Path | None = None, targeting: str = "", visual_description: str = "") -> dict:
-    ocr = None
+def predict(text: str = "", image: Path | None = None, targeting: str = "", visual_description: str = "",
+            *, hosted_ocr: dict | None = None, corrected_ocr_text: str | None = None) -> dict:
+    """Screen copy and preserve image context for extracted or corrected transcripts."""
+    ocr = _select_ocr_transcript(hosted_ocr) if hosted_ocr is not None else None
+    if ocr is not None and ocr["quality_warning"] is None:
+        ocr["quality_warning"] = "Check extracted text against the image before using the result."
     if image is not None:
         ocr = ocr_image(image)
-    ad_copy = " ".join(x for x in [text, ocr["text"] if ocr else "", visual_description] if x)
+    image_backed = ocr is not None or corrected_ocr_text is not None
+    transcript = ocr["text"] if ocr else ""
+    if corrected_ocr_text is not None:
+        transcript = corrected_ocr_text
+    ad_copy = " ".join(x for x in [text, transcript, visual_description] if x)
     result = classify(ad_copy, targeting)
     result.update({"input_text": text, "image": str(image) if image else None,
                    "ocr_text": ocr["text"] if ocr else None,
                    "ocr_confidence": ocr["confidence"] if ocr else None,
                    "ocr_warning": ocr.get("quality_warning") if ocr else None,
                    "ocr_passes": ocr.get("passes") if ocr else None,
-                   "visual_objects_assessed": False if image else None,
+                   "visual_objects_assessed": False if image_backed else None,
                    "visual_description": visual_description or None,
                    "targeting": targeting or None})
     result["threshold_decision"] = current_dataset_status()
     result["model_version"] = MODEL_VERSION
-    if image:
+    if image_backed:
         result["reason"] += " Image objects and scenes were not assessed; OCR reads printed text only."
-        if ocr.get("quality_warning"):
+        if ocr and ocr.get("quality_warning"):
             result["reason"] += " " + ocr["quality_warning"]
-        if ocr.get("severely_garbled") and not text.strip() and not visual_description.strip():
-            result["tier"] = "needs_review"
-            result["score"] = None
-            result["score_out_of_10"] = None
-            result["reason"] = "OCR was severely garbled. Review the image manually before assigning a creative cue tier."
-    if image and result["score"] == 0:
-        # A zero OCR cue count cannot establish that a visual ad is low-risk.
-        result["tier"] = "needs_review"
-        result["score"] = None
-        result["score_out_of_10"] = None
-        result["reason"] = "No matching cues in the OCR text. Visual content is unassessed, so this image needs review rather than a low-risk conclusion."
-    if image and not ocr["text"].strip() and not text.strip() and not visual_description.strip():
-        result["tier"] = "needs_review"
-        result["score"] = None
-        result["score_out_of_10"] = None
-        result["privacy_score"] = None
-        result["pressure_score"] = None
-        result["reason"] = "No readable text found in image. This prototype does not recognize visual objects. Add a visual description for review."
+        review_reason = None
+        if not ad_copy.strip():
+            review_reason = "No readable text found in image. Add a visual description for review."
+            result["privacy_score"] = result["pressure_score"] = None
+        elif ocr and ocr.get("severely_garbled") and not text.strip() and not visual_description.strip():
+            review_reason = "OCR was severely garbled. Review the image manually before assigning a creative cue tier."
+        elif result["score"] == 0:
+            review_reason = "No matching cues in the available text. The image still needs manual review."
+        if review_reason:
+            result.update(tier="needs_review", score=None, score_out_of_10=None,
+                          reason=review_reason + " " + result["reason"])
     return result
 
 

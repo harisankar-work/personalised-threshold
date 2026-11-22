@@ -12,7 +12,11 @@ module.exports=async function handler(req,res){
   if(!bytes.length||bytes.length>3*1024*1024)return res.status(413).json({error:'Hosted OCR supports images up to 3 MB'});
   const hex=bytes.subarray(0,12).toString('hex');const valid={'image/png':hex.startsWith('89504e470d0a1a0a'),'image/jpeg':hex.startsWith('ffd8ff'),'image/webp':bytes.subarray(0,4).toString()==='RIFF'&&bytes.subarray(8,12).toString()==='WEBP','image/bmp':hex.startsWith('424d'),'image/tiff':hex.startsWith('49492a00')||hex.startsWith('4d4d002a')};
   if(!valid[match[1]])return res.status(400).json({error:'Image type does not match its contents'});
-  worker=await createWorker('eng',1,{langPath:path.join(process.cwd(),'models'),gzip:false,cacheMethod:'none'});
+  worker=await createWorker('eng',1,{
+   langPath:path.join(process.cwd(),'models'),gzip:false,cacheMethod:'none',
+   // The job promise rejects separately. Let the request handler catch that rejection.
+   errorHandler:()=>{},
+  });
   const {data}=await worker.recognize(bytes);
   return res.status(200).json({text:data.text.trim(),confidence:data.confidence,quality_warning:'Check extracted text against the image and correct any omissions before using the result.'});
  }catch(e){return res.status(422).json({error:'Could not read this image. Try a clearer image or paste its copy.'});}
