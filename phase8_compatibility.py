@@ -9,17 +9,6 @@ from __future__ import annotations
 
 CATEGORIES = {"unknown", "retail", "food", "technology", "travel", "education", "finance", "health", "other"}
 CHANNELS = {"unknown", "social", "search", "display", "email", "other"}
-DATA_SOURCES = {"unknown", "none", "page_context", "broad_demographic", "first_party_behavior",
-                "first_party_purchase", "third_party", "combined", "other"}
-PERSONAL_SOURCES = {"broad_demographic", "first_party_behavior", "first_party_purchase", "third_party", "combined"}
-METHOD_FOR_SOURCE = {
-    "none": {"generic"},
-    "page_context": {"contextual"},
-    "broad_demographic": {"demographic", "combined"},
-    "first_party_behavior": {"behavioral", "combined"},
-    "first_party_purchase": {"historical", "combined"},
-    "combined": {"combined"},
-}
 SURVEILLANCE_CUES = {"private_activity_claim", "direct_identifier", "observed_behavior", "sensitive_personal_fact",
                      "precise_location", "purchase_history", "browsing_history", "explicit_surveillance",
                      "combined_signals", "specific_activity_detail", "no_consent", "sensitive_targeting",
@@ -41,18 +30,11 @@ def assess(campaign: dict, creative: dict, strategy: dict) -> dict:
         raise ValueError("Campaign, creative and strategy must be objects.")
     category = _choice(campaign, "product_category", CATEGORIES)
     channel = _choice(campaign, "channel", CHANNELS)
-    source = _choice(campaign, "data_source", DATA_SOURCES)
+    source = strategy["data_source"]
     method = strategy["targeting_method"]
-    consent = strategy["consent_status"]
-    eligibility = strategy["audience_eligibility"]
+    permission_review_reasons = strategy["permission_review_reasons"]
     cues = sorted({item.get("cue") for item in creative.get("evidence", [])
                    if isinstance(item, dict) and isinstance(item.get("cue"), str)})
-    source_mismatch = source in METHOD_FOR_SOURCE and method not in METHOD_FOR_SOURCE[source]
-    source_permission_missing = source in PERSONAL_SOURCES and (consent != "yes" or eligibility != "yes")
-    source_unspecified_for_personal_method = (method in {"demographic", "behavioral", "historical", "combined"}
-                                              and source in {"unknown", "other"})
-    source_review = (source in {"third_party", "other"} or source_mismatch or source_permission_missing
-                     or source_unspecified_for_personal_method)
     signals = []
     if cues:
         if any(cue in SURVEILLANCE_CUES for cue in cues):
@@ -61,17 +43,7 @@ def assess(campaign: dict, creative: dict, strategy: dict) -> dict:
             signals.append("Pressure wording is present; compare one calmer version before launch.")
     if not signals:
         signals.append("No mapped privacy or pressure wording was found; visual and consumer responses remain unmeasured.")
-    checks = []
-    if source == "unknown":
-        checks.append("Declare the data source before assessing how the targeting method operates.")
-    if source_mismatch:
-        checks.append("Declared data source and targeting method do not match; verify the actual campaign configuration.")
-    if source_permission_missing:
-        checks.append("This personal-data source needs verified permission and audience eligibility before use.")
-    if source == "third_party":
-        checks.append("Third-party data rights and permitted purpose require separate review; the app cannot verify them.")
-    if source == "other" or source_unspecified_for_personal_method:
-        checks.append("The data source is unresolved for this targeting method; review it before launch.")
+    checks = list(permission_review_reasons)
     if category == "unknown":
         checks.append("Specify a product category so the test plan can use the actual offer context.")
     if channel == "unknown":
@@ -86,7 +58,7 @@ def assess(campaign: dict, creative: dict, strategy: dict) -> dict:
         "channel_declared": channel,
         "data_source_declared": source,
         "targeting_method_declared": method,
-        "data_source_review_required": source_review,
+        "data_source_review_required": bool(permission_review_reasons),
         "creative_signals": signals,
         "prelaunch_checks": checks,
         "evidence": {

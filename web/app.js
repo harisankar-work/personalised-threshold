@@ -344,12 +344,11 @@ $('ad-form').addEventListener('submit', async (event) => {
     }
     const response = await fetch('/api/analyze', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({text: hostedOcr ? [copy,hostedOcr.text].filter(Boolean).join(" ") : copy, image_data: analysisImage, targeting: $('targeting').value.trim(),
+      body: JSON.stringify({text: copy, image_data: analysisImage, hosted_ocr: hostedOcr ?? undefined, targeting: $('targeting').value.trim(),
         visual_description: visual, campaign: campaignInput()})
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'The ad could not be analyzed.');
-    if(hostedOcr){data.ocr_text=hostedOcr.text;data.ocr_confidence=hostedOcr.confidence;data.ocr_warning=hostedOcr.quality_warning;}
     renderResult(data);
   } catch (error) {
     setResultState('empty'); showError(error.message || 'The ad could not be analyzed. Try again.');
@@ -358,7 +357,31 @@ $('ad-form').addEventListener('submit', async (event) => {
   }
 });
 
-$('reanalyze-ocr').addEventListener('click', async()=>{if(!lastOcr)return;const button=$('reanalyze-ocr');button.disabled=true;try{const response=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:$('corrected-ocr').value,corrected_ocr_text:$('corrected-ocr').value,original_ocr_text:lastOcr.text,targeting:$('targeting').value,visual_description:$('visual-description').value,campaign:campaignInput()})});const result=await response.json();if(!response.ok)throw Error(result.error);result.ocr_text=lastOcr.text;result.ocr_warning=lastOcr.warning;renderResult(result);$('ocr-correction-status').textContent='Analysis uses your corrected text. Original OCR is preserved above. '+(lastOcr.warning||'');}catch(e){showError(e.message);}finally{button.disabled=false;}});
+$('reanalyze-ocr').addEventListener('click', async () => {
+  if (!lastOcr) return;
+  const originalOcr = lastOcr;
+  const button = $('reanalyze-ocr');
+  button.disabled = true;
+  try {
+    const response = await fetch('/api/analyze', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        corrected_ocr_text: $('corrected-ocr').value, original_ocr_text: originalOcr.text,
+        targeting: $('targeting').value, visual_description: $('visual-description').value, campaign: campaignInput()
+      })
+    });
+    const result = await response.json();
+    if (!response.ok) throw Error(result.error);
+    result.ocr_warning = originalOcr.warning;
+    renderResult(result);
+    $('ocr-correction-status').textContent = 'Analysis uses your corrected text. Original OCR is preserved above. '
+      + (originalOcr.warning || '');
+  } catch (error) {
+    showError(error.message);
+  } finally {
+    button.disabled = false;
+  }
+});
 // Preserve campaign and creative inputs across navigation without storing images.
 const saved=JSON.parse(sessionStorage.getItem('49c-form')||'{}');for(const [id,value] of Object.entries(saved)){const node=$(id);if(node&&node.type!=='file')node.value=value;}
 window.addEventListener('pagehide',()=>{const values={};document.querySelectorAll('#ad-form input:not([type=file]),#ad-form select,#ad-form textarea').forEach(n=>{if(n.id)values[n.id]=n.value;});sessionStorage.setItem('49c-form',JSON.stringify(values));sessionStorage.setItem('49c-campaign',JSON.stringify(campaignInput()));});

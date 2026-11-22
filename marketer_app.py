@@ -51,7 +51,7 @@ def image_matches_type(raw: bytes, mime: str) -> bool:
     }[mime]()
 
 
-def validate_payload(payload: object) -> tuple[str, str, str, bytes | None, str | None]:
+def validate_payload(payload: object, *, has_transcript: bool = False) -> tuple[str, str, str, bytes | None, str | None]:
     """Reject malformed input before passing ad content to OCR or the rubric."""
     if not isinstance(payload, dict):
         raise ValueError("Send an ad as a JSON object.")
@@ -81,9 +81,21 @@ def validate_payload(payload: object) -> tuple[str, str, str, bytes | None, str 
             raise ValueError("Choose a non-empty image under 10 MB.")
         if not image_matches_type(raw, mime):
             raise ValueError("The image content does not match its file type.")
-    if not fields["text"] and raw is None and not fields["visual_description"]:
+    if not fields["text"] and raw is None and not fields["visual_description"] and not has_transcript:
         raise ValueError("Add ad copy, an image, or a visual description to analyze.")
     return fields["text"], fields["targeting"], fields["visual_description"], raw, mime
+
+
+def validate_hosted_ocr(value: object) -> dict:
+    if not isinstance(value, dict):
+        raise ValueError("Hosted OCR must contain a transcript and confidence.")
+    text = value.get("text")
+    confidence = value.get("confidence")
+    if not isinstance(text, str) or len(text) > FIELD_LIMITS["text"]:
+        raise ValueError("The OCR transcript must be text under 20,000 characters.")
+    if type(confidence) not in (int, float) or not 0 <= confidence <= 100:
+        raise ValueError("OCR confidence must be between 0 and 100.")
+    return {"text": text, "confidence": confidence}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -140,13 +152,23 @@ class Handler(BaseHTTPRequestHandler):
             if self.path == "/api/simulation":
                 self.send_json(HTTPStatus.OK, simulate(payload))
                 return
-            text, targeting, visual, raw, mime = validate_payload(payload)
-            if "corrected_ocr_text" in payload:
+            hosted_ocr = None
+            corrected = None
+            if isinstance(payload, dict) and "hosted_ocr" in payload:
+                hosted_ocr = validate_hosted_ocr(payload["hosted_ocr"])
+            if isinstance(payload, dict) and "corrected_ocr_text" in payload:
                 corrected = payload["corrected_ocr_text"]
                 original = payload.get("original_ocr_text", "")
-                if not isinstance(corrected,str) or not corrected.strip() or len(corrected)>20000 or not isinstance(original,str) or len(original)>20000:
+                if (not isinstance(corrected, str) or not corrected.strip() or len(corrected) > FIELD_LIMITS["text"]
+                        or not isinstance(original, str) or len(original) > FIELD_LIMITS["text"]):
                     raise ValueError("Corrected OCR must be non-empty text under 20,000 characters.")
-                text, raw = corrected.strip(), None
+                corrected = corrected.strip()
+            text, targeting, visual, raw, mime = validate_payload(
+                payload, has_transcript=hosted_ocr is not None or corrected is not None)
+            if hosted_ocr is not None and (raw is not None or corrected is not None):
+                raise ValueError("Supply only one image or OCR transcript for analysis.")
+            if corrected is not None:
+                raw = None
             if raw is not None and os.environ.get("VERCEL"):
                 raise ValueError("Use /api/ocr for hosted image extraction, then analyze the reviewed text.")
             if raw is not None:
@@ -156,10 +178,13 @@ class Handler(BaseHTTPRequestHandler):
                     result = predict(text=text, image=path, targeting=targeting, visual_description=visual)
                     result["image"] = None  # never return a temporary server path
             else:
-                result = predict(text=text, targeting=targeting, visual_description=visual)
-            if "corrected_ocr_text" in payload:
-                result["corrected_ocr_text"] = text
+                result = predict(text=text if corrected is None else "", targeting=targeting,
+                                 visual_description=visual, hosted_ocr=hosted_ocr, corrected_ocr_text=corrected)
+            if corrected is not None:
+                result["input_text"] = corrected
+                result["corrected_ocr_text"] = corrected
                 result["original_ocr_text"] = original
+                result["ocr_text"] = original
                 result["analysis_text_source"] = "manual_ocr_correction"
             if "campaign" in payload:
                 result["strategy"] = evaluate_strategy(payload["campaign"], result)

@@ -8,6 +8,8 @@ from marketer_app import Handler
 from stp_advisory import evaluate, survey_personas
 from threshold_engine import current_dataset_status
 
+ELIGIBLE_GENERIC = {"targeting_method": "generic", "data_source": "none", "audience_eligibility": "yes"}
+
 
 def creative(text="Discover our new collection."):
     return classify(text)
@@ -15,7 +17,7 @@ def creative(text="Discover our new collection."):
 
 class StrategyDecisionTests(unittest.TestCase):
     def test_missing_financial_inputs_keep_existing_option_without_fabricated_results(self):
-        result = evaluate({}, creative())
+        result = evaluate(ELIGIBLE_GENERIC, creative())
         self.assertEqual(result["action"], "keep_current_campaign")
         self.assertEqual(result["options"][0]["key"], "keep_current_campaign")
         self.assertIsNone(result["options"][1]["incremental_implementation_cost"])
@@ -24,7 +26,7 @@ class StrategyDecisionTests(unittest.TestCase):
         self.assertFalse(result["validated_incremental_performance"])
 
     def test_cheap_revision_is_advisory_within_budget_and_extra_variants_are_not_recommended(self):
-        inputs = {"total_budget": "1000", "committed_spend": "900", "revision_cost": "20",
+        inputs = {**ELIGIBLE_GENERIC, "total_budget": "1000", "committed_spend": "900", "revision_cost": "20",
                   "targeting_cost": "40", "variant_cost": "80", "segmentation_cost": "50",
                   "management_cost": "30", "contribution_margin": "12"}
         result = evaluate(inputs, creative("Last chance! Only 3 left!"))
@@ -33,10 +35,10 @@ class StrategyDecisionTests(unittest.TestCase):
         self.assertEqual(result["options"][1]["break_even_incremental_conversions"], 2)
         self.assertTrue(result["options"][1]["budget_feasible"])
         self.assertFalse(result["options"][3]["budget_feasible"])
-        self.assertEqual(result["options"][3]["permission_status"], "Unverified")
+        self.assertEqual(result["options"][3]["permission_status"], "Declared eligible")
 
     def test_hypothetical_scenarios_use_margin_and_cost_but_do_not_trigger_rollout(self):
-        inputs = {"total_budget": 1000, "committed_spend": 700, "variant_cost": 90,
+        inputs = {**ELIGIBLE_GENERIC, "total_budget": 1000, "committed_spend": 700, "variant_cost": 90,
                   "management_cost": 20, "segmentation_cost": 40, "contribution_margin": 30,
                   "worst_incremental_conversions": 0, "central_incremental_conversions": 5,
                   "best_incremental_conversions": 9}
@@ -48,7 +50,7 @@ class StrategyDecisionTests(unittest.TestCase):
         self.assertEqual(result["scenario"]["results"]["best"]["net_incremental_value"], "120.00")
 
     def test_multiple_variants_cost_more_and_budget_fragmentation_does_not_override_keep(self):
-        result = evaluate({"total_budget": 500, "committed_spend": 470,
+        result = evaluate({**ELIGIBLE_GENERIC, "total_budget": 500, "committed_spend": 470,
                            "variant_cost": 25, "management_cost": 10,
                            "segmentation_cost": 5, "variant_count": 3,
                            "audience_reach": 100}, creative())
@@ -70,8 +72,8 @@ class StrategyDecisionTests(unittest.TestCase):
                 self.assertEqual(evaluate(input_data, creative())["options"][2]["permission_status"], "Hold for review")
 
     def test_unassessed_image_and_unaffordable_revision_hold_for_review(self):
-        self.assertEqual(evaluate({}, {"tier": "needs_review", "evidence": []})["action"], "hold_for_review")
-        inputs = {"total_budget": 100, "committed_spend": 95, "revision_cost": 10}
+        self.assertEqual(evaluate(ELIGIBLE_GENERIC, {"tier": "needs_review", "evidence": []})["action"], "hold_for_review")
+        inputs = {**ELIGIBLE_GENERIC, "total_budget": 100, "committed_spend": 95, "revision_cost": 10}
         self.assertEqual(evaluate(inputs, creative("Last chance!"))["action"], "hold_for_review")
 
     def test_invalid_cost_and_scenario_inputs_fail_explicitly(self):
@@ -121,7 +123,7 @@ class StrategyRouteTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(new["tier"], old["tier"])
         self.assertEqual(new["threshold_decision"]["status"], "insufficient_evidence")
-        self.assertEqual(new["strategy"]["action"], "keep_current_campaign")
+        self.assertEqual(new["strategy"]["action"], "hold_for_review")
         self.assertEqual(new["strategy"]["survey_personas"]["status"], "descriptive_only")
 
     def test_invalid_campaign_is_a_client_error(self):
