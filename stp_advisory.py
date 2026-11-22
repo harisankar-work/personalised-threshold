@@ -19,9 +19,9 @@ SCENARIO_OPTIONS = {"revise_one_creative", "adjust_targeting", "one_variant", "m
 DATA_SOURCES = {"unknown", "none", "page_context", "broad_demographic", "first_party_behavior",
                 "first_party_purchase", "third_party", "combined", "other"}
 SOURCE_METHODS = {"none": {"generic"}, "page_context": {"contextual"},
-                  "broad_demographic": {"demographic", "combined"},
-                  "first_party_behavior": {"behavioral", "combined"},
-                  "first_party_purchase": {"historical", "combined"}, "combined": {"combined"}}
+                  "broad_demographic": {"demographic"},
+                  "first_party_behavior": {"behavioral"},
+                  "first_party_purchase": {"historical"}, "combined": {"combined"}}
 OPTION_ORDER = ("keep_current_campaign", "revise_one_creative", "adjust_targeting", "one_variant", "multiple_variants")
 OPTION_NAMES = {
     "keep_current_campaign": "Keep current campaign",
