@@ -10,6 +10,9 @@ const errorBox = $('form-error');
 let mode = 'text';
 let selectedFile = null;
 let previewUrl = null;
+let lastOcr = null;
+let inputRevision = 0;
+let requestInFlight = false;
 
 const examples = {
   generic: 'Discover our new fall collection. Shop now and save 20%.',
@@ -55,7 +58,7 @@ function setMode(next) {
   textPanel.hidden = !isText;
   imagePanel.hidden = isText;
   hideError();
-  setResultState('empty');
+  invalidateResult();
 }
 textTab.addEventListener('click', () => setMode('text'));
 imageTab.addEventListener('click', () => setMode('image'));
@@ -69,7 +72,7 @@ imageTab.addEventListener('click', () => setMode('image'));
 textInput.addEventListener('input', () => {
   $('char-count').textContent = `${textInput.value.length.toLocaleString()} characters`;
   hideError();
-  setResultState('empty');
+  invalidateResult();
 });
 document.querySelectorAll('.example-chip').forEach((button) => button.addEventListener('click', () => {
   setMode('text');
@@ -90,7 +93,7 @@ function removeFile() {
   $('image-preview').hidden = true;
   $('drop-content').hidden = false;
   hideError();
-  setResultState('empty');
+  invalidateResult();
 }
 function setFile(file) {
   if (!file) return;
@@ -115,8 +118,8 @@ $('remove-image').addEventListener('click', (event) => { event.preventDefault();
   event.preventDefault(); dropZone.classList.remove('dragover');
 }));
 dropZone.addEventListener('drop', (event) => setFile(event.dataTransfer.files[0]));
-$('targeting').addEventListener('input', () => setResultState('empty'));
-$('visual-description').addEventListener('input', () => setResultState('empty'));
+$('targeting').addEventListener('input', invalidateResult);
+$('visual-description').addEventListener('input', invalidateResult);
 const campaignFields = {
   currency: 'currency', objective: 'objective', targeting_method: 'targeting-method',
   product_category: 'product-category', channel: 'channel', data_source: 'data-source',
@@ -131,7 +134,7 @@ const campaignFields = {
   central_incremental_conversions: 'central-conversions',
   best_incremental_conversions: 'best-conversions'
 };
-Object.values(campaignFields).forEach((id) => $(id).addEventListener('input', () => setResultState('empty')));
+Object.values(campaignFields).forEach((id) => $(id).addEventListener('input', invalidateResult));
 function campaignInput() {
   return Object.fromEntries(Object.entries(campaignFields).map(([key, id]) => [key, $(id).value.trim()]));
 }
@@ -150,6 +153,20 @@ function setResultState(state) {
   $('result-content').hidden = state !== 'content';
   $('ad-form').setAttribute('aria-busy', String(state === 'loading'));
 }
+function invalidateResult() {
+  inputRevision += 1;
+  lastOcr = null;
+  setResultState('empty');
+}
+
+async function readApiResponse(response, fallback) {
+  const type = response.headers.get('content-type') || '';
+  if (!type.includes('application/json')) throw new Error(fallback);
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || fallback);
+  return data;
+}
+
 function displayMoney(value, currency) {
   if (value === null || value === undefined) return 'Unknown';
   return `${currency} ${Number(value).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
@@ -239,9 +256,10 @@ function renderStrategy(strategy) {
   if (strategy.missing_inputs?.length) notes.push(`Not entered: ${strategy.missing_inputs.map((x) => x.replaceAll('_', ' ')).join(', ')}.`);
   notes.forEach((note) => { const li = document.createElement('li'); li.textContent = note; warnings.append(li); });
 }
-let lastOcr = null;
 function renderResult(data) {
-  if(data.ocr_text !== null && data.ocr_text !== undefined){lastOcr={text:data.ocr_text,warning:data.ocr_warning};$("corrected-ocr").value=data.corrected_ocr_text ?? data.ocr_text;}
+  lastOcr = typeof data.ocr_text === 'string' ? {text: data.ocr_text, warning: data.ocr_warning} : null;
+  $('corrected-ocr').value = data.corrected_ocr_text ?? lastOcr?.text ?? '';
+  $('ocr-correction-status').textContent = '';
   const tier = data.tier || 'needs_review';
   const style = tier.startsWith('low') ? 'low' : tier.startsWith('moderate') ? 'moderate' : tier.startsWith('high') ? 'high' : 'review';
   const tierText = {low: 'Low screening tier', moderate: 'Moderate screening tier', high: 'High screening tier', review: 'Needs review'}[style];
@@ -298,7 +316,7 @@ function renderResult(data) {
     item.textContent = repair.action;
     repairList.append(item);
   });
-  $('ocr-details').hidden = data.ocr_text === null;
+  $('ocr-details').hidden = lastOcr === null;
   $('ocr-text').textContent = data.ocr_text || 'No readable text was found.';
   $('result-note').textContent = data.reason || 'Exploratory rubric score only. Not a measured consumer reaction.';
   $('threshold-status').textContent = data.threshold_decision?.reason || 'Insufficient evidence for a consumer-level recommendation from the current data.';
@@ -317,68 +335,84 @@ $('clear-btn').addEventListener('click', () => {
   $('product-category').value = 'unknown'; $('channel').value = 'unknown'; $('data-source').value = 'unknown';
   $('consent-status').value = 'unknown'; $('audience-eligibility').value = 'unknown';
   $('currency').value = 'INR'; $('scenario-option').value = 'one_variant';
-  removeFile(); setResultState('empty'); setMode('text'); textInput.focus();
+  removeFile(); setMode('text'); textInput.focus();
 });
 
 $('ad-form').addEventListener('submit', async (event) => {
-  event.preventDefault(); hideError();
+  event.preventDefault();
+  if (requestInFlight) return;
+  hideError();
   const copy = mode === 'text' ? textInput.value.trim() : '';
   const visual = mode === 'image' ? $('visual-description').value.trim() : '';
   if (mode === 'text' && !copy) { showError('Paste ad copy to analyze.'); textInput.focus(); return; }
   if (mode === 'image' && !selectedFile && !visual) { showError('Choose an image or add a visual description.'); fileInput.focus(); return; }
+  const revision = inputRevision;
+  const file = mode === 'image' ? selectedFile : null;
+  const campaign = campaignInput();
+  const targeting = $('targeting').value.trim();
+  requestInFlight = true;
   const button = $('analyze-btn'); button.disabled = true;
   $('button-text').textContent = 'Analyzing…'; setResultState('loading');
   try {
-    const imageData = mode === 'image' && selectedFile ? await readDataUrl(selectedFile) : null;
+    const imageData = file ? await readDataUrl(file) : null;
     let hostedOcr = null;
     let analysisImage = imageData;
     if (imageData) {
-      const config = await fetch('/api/config').then(r => r.json());
+      const config = await readApiResponse(await fetch('/api/config'), 'Image analysis is temporarily unavailable. Try again or paste the ad copy.');
+      if (revision !== inputRevision) return;
       if (config.hosted_ocr) {
-        if (selectedFile.size > 3 * 1024 * 1024) throw new Error('Hosted image OCR supports up to 3 MB. Resize the image or paste its copy.');
+        if (file.size > 3 * 1024 * 1024) throw new Error('Hosted image OCR supports up to 3 MB. Resize the image or paste its copy.');
         const response = await fetch('/api/ocr', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image_data:imageData})});
-        hostedOcr = await response.json();
-        if (!response.ok) throw new Error(hostedOcr.error);
+        hostedOcr = await readApiResponse(response, 'Image OCR is temporarily unavailable. Try again or paste the ad copy.');
         analysisImage = null;
       }
     }
+    if (revision !== inputRevision) return;
     const response = await fetch('/api/analyze', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({text: copy, image_data: analysisImage, hosted_ocr: hostedOcr ?? undefined, targeting: $('targeting').value.trim(),
-        visual_description: visual, campaign: campaignInput()})
+      body: JSON.stringify({text: copy, image_data: analysisImage, hosted_ocr: hostedOcr ?? undefined,
+        targeting, visual_description: visual, campaign})
     });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'The ad could not be analyzed.');
-    renderResult(data);
+    const data = await readApiResponse(response, 'The ad could not be analyzed. Try again.');
+    if (revision === inputRevision) renderResult(data);
   } catch (error) {
-    setResultState('empty'); showError(error.message || 'The ad could not be analyzed. Try again.');
+    if (revision === inputRevision) {
+      invalidateResult();
+      showError(error.message || 'The ad could not be analyzed. Try again.');
+    }
   } finally {
+    requestInFlight = false;
     button.disabled = false; $('button-text').textContent = 'Analyze ad';
   }
 });
 
 $('reanalyze-ocr').addEventListener('click', async () => {
-  if (!lastOcr) return;
+  if (!lastOcr || requestInFlight) return;
+  hideError();
+  const revision = inputRevision;
+  const correctedText = $('corrected-ocr').value;
   const originalOcr = lastOcr;
   const button = $('reanalyze-ocr');
+  requestInFlight = true;
   button.disabled = true;
   try {
     const response = await fetch('/api/analyze', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        corrected_ocr_text: $('corrected-ocr').value, original_ocr_text: originalOcr.text,
+        corrected_ocr_text: correctedText, original_ocr_text: originalOcr.text,
         targeting: $('targeting').value, visual_description: $('visual-description').value, campaign: campaignInput()
       })
     });
-    const result = await response.json();
-    if (!response.ok) throw Error(result.error);
+    const result = await readApiResponse(response, 'The corrected text could not be analyzed. Try again.');
+    if (revision !== inputRevision || correctedText !== $('corrected-ocr').value) return;
     result.ocr_warning = originalOcr.warning;
     renderResult(result);
     $('ocr-correction-status').textContent = 'Analysis uses your corrected text. Original OCR is preserved above. '
       + (originalOcr.warning || '');
   } catch (error) {
-    showError(error.message);
+    if (revision === inputRevision && correctedText === $('corrected-ocr').value) showError(error.message);
   } finally {
+    requestInFlight = false;
     button.disabled = false;
   }
 });

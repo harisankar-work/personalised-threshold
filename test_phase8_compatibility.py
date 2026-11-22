@@ -51,6 +51,17 @@ class CompatibilityTests(unittest.TestCase):
                 self.assertTrue(result["data_source_review_required"])
                 self.assertEqual(strategy["action"], "hold_for_review")
 
+    def test_combined_targeting_requires_a_combined_data_source(self):
+        for source in ("broad_demographic", "first_party_behavior", "first_party_purchase", "combined"):
+            with self.subTest(source=source):
+                result, strategy = review({
+                    "targeting_method": "combined", "data_source": source,
+                    "consent_status": "yes", "audience_eligibility": "yes",
+                })
+                allowed = source == "combined"
+                self.assertEqual(result["data_source_review_required"], not allowed)
+                self.assertEqual(strategy["action"], "keep_current_campaign" if allowed else "hold_for_review")
+
     def test_declared_first_party_permission_is_not_a_fit_prediction(self):
         campaign = {"targeting_method": "behavioral", "data_source": "first_party_behavior",
                     "consent_status": "yes", "audience_eligibility": "yes", "product_category": "retail",
