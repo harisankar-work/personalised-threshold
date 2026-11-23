@@ -183,7 +183,6 @@
               <p class="step-label">ASSESSMENT</p>
               <h2 id="result-title">Creative screening result</h2>
             </div>
-            <span class="result-meta">Exploratory · 0–10 rubric</span>
           </div>
 
           <div id="result-empty" class="result-empty">
@@ -198,19 +197,13 @@
           </div>
 
           <div id="result-content" aria-live="polite" hidden>
-            <p class="score-kicker">Creative cue score · 0–10</p>
+            <p class="score-kicker">Matched-cue score</p>
             <div class="score-topline">
               <span id="tier-pill" class="tier-pill">Low screening tier</span>
-              <span id="score-context">Rubric cue points</span>
             </div>
             <div class="score-display"><span id="score-number">0</span><span class="score-denominator">/10</span></div>
             <div id="score-scale" class="score-scale" aria-label="Exploratory cue score out of 10"></div>
-            <div class="scale-labels"><span>Fewer matched cues</span><span>More matched cues</span></div>
-            <div id="score-breakdown" class="score-breakdown" hidden>
-              <span>Privacy cue points <strong id="privacy-score">0</strong></span>
-              <span>Pressure cue points <strong id="pressure-score">0</strong></span>
-            </div>
-            <p class="score-disclaimer">A qualitative screen of observable cues. This is not a probability, consumer rating, or validated prediction.</p>
+            <p class="score-disclaimer">Rule-based screening of observable cues, not a measured consumer response.</p>
             <div class="input-review"><strong>Input analyzed</strong><p id="input-summary"></p></div>
 
             <div class="result-divider"></div>
@@ -244,8 +237,8 @@
               <p id="strategy-reason" class="strategy-reason"></p>
               <p id="strategy-budget" class="strategy-budget"></p>
               <p id="baseline-context" class="baseline-context" hidden></p>
-              <div class="strategy-table-wrap"><table class="strategy-table"><caption>Compare within the same total budget</caption><thead><tr><th>Option</th><th>Extra cost</th><th>Budget</th><th>Permission</th><th>Break-even conversions</th></tr></thead><tbody id="strategy-options"></tbody></table></div>
-              <p class="strategy-hint">Break-even uses only your contribution margin and entered costs. It is not predicted performance.</p>
+              <div class="strategy-options" id="strategy-options" aria-label="Campaign options"></div>
+              <p class="strategy-hint">Expand an option for cost and break-even details. Break-even is a financial check, not predicted performance.</p>
               <div id="scenario-result" class="scenario-result" hidden><h4>What-if sensitivity</h4><p id="scenario-label"></p><div id="scenario-values" class="scenario-values"></div></div>
               <details class="persona-details"><summary>Exploratory consumer profiles</summary><p>Survey responses from unrelated people. These profiles cannot identify your campaign audience or justify segment-specific spending.</p><div id="persona-list"></div></details>
               <ul id="strategy-warnings" class="strategy-warnings"></ul>
