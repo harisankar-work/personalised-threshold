@@ -251,15 +251,37 @@ function renderStrategy(strategy) {
     .map(([label, key, money]) => `${label}: ${money ? displayMoney(reported[key], strategy.currency) : key === 'conversion_rate_pct' ? reported[key] + '%' : Number(reported[key]).toLocaleString()}`);
   $('baseline-context').hidden = context.length === 0;
   $('baseline-context').textContent = context.length ? `${context.join(' · ')}. Reported context only; no uplift is predicted.` : '';
-  const rows = $('strategy-options'); rows.replaceChildren();
+  const optionList = $('strategy-options'); optionList.replaceChildren();
   (strategy.options || []).forEach((option) => {
-    const tr = document.createElement('tr');
-    const cells = [option.name, displayMoney(option.incremental_implementation_cost, strategy.currency),
-      option.budget_feasible === null ? 'Unknown' : option.budget_feasible ? 'Within budget' : 'Over budget',
-      option.permission_status || 'Unverified',
-      option.break_even_incremental_conversions === null ? 'Unknown' : String(option.break_even_incremental_conversions)];
-    cells.forEach((value) => { const td = document.createElement('td'); td.textContent = value; tr.append(td); });
-    rows.append(tr);
+    const card = document.createElement('details');
+    card.className = 'strategy-option';
+    const summary = document.createElement('summary');
+    const name = document.createElement('strong'); name.textContent = option.name;
+    const status = document.createElement('span');
+    status.className = 'option-status';
+    const budgetStatus = option.budget_feasible === null ? 'Budget unknown'
+      : option.budget_feasible ? 'Within budget' : 'Over budget';
+    const permissionStatus = option.permission_status || 'Unverified';
+    status.textContent = `${budgetStatus} · ${permissionStatus}`;
+    summary.append(name, status);
+
+    const details = document.createElement('dl');
+    details.className = 'option-details';
+    [
+      ['Extra cost', displayMoney(option.incremental_implementation_cost, strategy.currency)],
+      ['Budget after option', option.remaining_budget_after_option === null
+        ? 'Unknown' : displayMoney(option.remaining_budget_after_option, strategy.currency)],
+      ['Permission review', permissionStatus],
+      ['Break-even conversions', option.break_even_incremental_conversions === null
+        ? 'Unknown' : String(option.break_even_incremental_conversions)],
+      ['Evidence', option.evidence_status?.replaceAll('_', ' ') || 'Not stated']
+    ].forEach(([label, value]) => {
+      const group = document.createElement('div');
+      const term = document.createElement('dt'); term.textContent = label;
+      const description = document.createElement('dd'); description.textContent = value;
+      group.append(term, description); details.append(group);
+    });
+    card.append(summary, details); optionList.append(card);
   });
   const scenario = strategy.scenario;
   const hasScenario = scenario && Object.values(scenario.results || {}).some((item) => item.user_entered_incremental_conversions !== null);
@@ -296,7 +318,9 @@ function renderStrategy(strategy) {
   });
   const warnings = $('strategy-warnings'); warnings.replaceChildren();
   const notes = [...(strategy.warnings || [])];
-  if (strategy.missing_inputs?.length) notes.push(`Not entered: ${strategy.missing_inputs.map((x) => x.replaceAll('_', ' ')).join(', ')}.`);
+  const editableInputs = new Set(Object.keys(campaignFields));
+  const missingInputs = (strategy.missing_inputs || []).filter((key) => editableInputs.has(key));
+  if (missingInputs.length) notes.push(`Not entered: ${missingInputs.map((x) => x.replaceAll('_', ' ')).join(', ')}.`);
   notes.forEach((note) => { const li = document.createElement('li'); li.textContent = note; warnings.append(li); });
 }
 function renderResult(data) {
@@ -309,7 +333,6 @@ function renderResult(data) {
   $('tier-pill').textContent = tierText;
   $('tier-pill').className = `tier-pill ${style}`;
   $('score-number').textContent = data.score_out_of_10 ?? '—';
-  $('score-context').textContent = data.score_out_of_10 === null ? 'No score available' : 'Rubric cue points' + (data.model_version ? ' · v' + data.model_version : '');
   $('score-breakdown').hidden = data.score_out_of_10 === null;
   $('privacy-score').textContent = data.privacy_score ?? '—';
   $('pressure-score').textContent = data.pressure_score ?? '—';
