@@ -1,16 +1,16 @@
-# 49-C · The Personalization Threshold
+# Kiwadoi · The Personalization Threshold
 
 A local web application for reviewing advertisements, exploring fictional consumer profiles, and comparing personalization options against permissions and budgets.
 
-**Reviewed source snapshot:** `49C-2026-11-23` (`release/49c-review-2026-11-23`). The campaign planner footer and [completion report](49C_FINAL_PROJECT_REPORT.md) carry the same identifier. Use the release ref below to reproduce this source snapshot. The hosted Vercel deployment matches it only after deployment from that ref or its exact commit; this documentation change does not itself deploy the app.
+**Reviewed source snapshot:** `49C-2026-11-23` (`release/49c-review-2026-11-23`). The [completion report](49C_FINAL_PROJECT_REPORT.md) carries the source snapshot identifier. Use the release ref below to reproduce this source snapshot. The hosted Vercel deployment matches it only after deployment from that ref or its exact commit; this documentation change does not itself deploy the app.
 
 ## Project team
 
-49-C is a group academic project maintained collaboratively in this shared repository.
+Kiwadoi is the app name for this group academic project, maintained collaboratively in this shared repository.
 
 - **Harisankar S** — repository owner.
 - **Upamanyu M** — project collaborator. Improved hosted image OCR and transcript correction handling, aligned campaign permission checks, and added regression coverage in PR #1. That earlier contribution reported 83 passing tests and 14 local image cases; these are historical PR #1 results, not validation of source snapshot `49C-2026-11-23`. [GitHub profile](https://github.com/Upamanyu003) · [Contribution pull request](https://github.com/harisankar-work/personalised-threshold/pull/1)
-- **Risaal K P** — project collaborator.
+- **Risaal K P** — project collaborator. Refined planner result feedback and small-screen campaign options ([PR #5](https://github.com/harisankar-work/personalised-threshold/pull/5)), and updated Kiwadoi branding and the score guide across the app ([PR #7](https://github.com/harisankar-work/personalised-threshold/pull/7)).
 
 ## Features
 
