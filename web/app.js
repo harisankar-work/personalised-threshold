@@ -80,6 +80,7 @@ textInput.addEventListener('input', () => {
   hideError();
   invalidateResult();
 });
+$('try-example-btn').addEventListener('click', () => $('example-generic').click());
 document.querySelectorAll('.example-chip').forEach((button) => button.addEventListener('click', () => {
   setMode('text');
   textInput.value = examples[button.dataset.example];
