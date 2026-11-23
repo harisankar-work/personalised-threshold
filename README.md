@@ -1,4 +1,4 @@
-# 49-C · The Personalization Threshold
+# Kiwadoi · The Personalization Threshold
 
 A local web application for reviewing advertisements, exploring fictional consumer profiles, and comparing personalization options against permissions and budgets.
 
@@ -6,11 +6,11 @@ A local web application for reviewing advertisements, exploring fictional consum
 
 ## Project team
 
-49-C is a group academic project maintained collaboratively in this shared repository.
+Kiwadoi is the app name for this group academic project, maintained collaboratively in this shared repository.
 
 - **Harisankar S** — repository owner.
 - **Upamanyu M** — project collaborator. Improved hosted image OCR and transcript correction handling, aligned campaign permission checks, and added regression coverage in PR #1. That earlier contribution reported 83 passing tests and 14 local image cases; these are historical PR #1 results, not validation of source snapshot `49C-2026-11-23`. [GitHub profile](https://github.com/Upamanyu003) · [Contribution pull request](https://github.com/harisankar-work/personalised-threshold/pull/1)
-- **Risaal K P** — project collaborator. Refined planner result feedback and small-screen campaign options (PR #5), then updated the Kiwadoi branding and simplified the score guide across the app (this PR).
+- **Risaal K P** — project collaborator. Refined planner result feedback and small-screen campaign options ([PR #5](https://github.com/harisankar-work/personalised-threshold/pull/5)), and updated Kiwadoi branding and the score guide across the app in this contribution.
 
 ## Features
 
