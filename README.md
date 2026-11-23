@@ -9,7 +9,7 @@ A local web application for reviewing advertisements, exploring fictional consum
 49-C is a group academic project maintained collaboratively in this shared repository.
 
 - **Harisankar S** — repository owner.
-- **Upamanyu M** — project collaborator. Improved hosted image OCR and transcript correction handling, aligned campaign permission checks, and added regression coverage. Verified the changes with 83 passing tests and 14 local image cases. [GitHub profile](https://github.com/Upamanyu003) · [Contribution pull request](https://github.com/harisankar-work/personalised-threshold/pull/1)
+- **Upamanyu M** — project collaborator. Improved hosted image OCR and transcript correction handling, aligned campaign permission checks, and added regression coverage in PR #1. That earlier contribution reported 83 passing tests and 14 local image cases; these are historical PR #1 results, not validation of source snapshot `49C-2026-11-23`. [GitHub profile](https://github.com/Upamanyu003) · [Contribution pull request](https://github.com/harisankar-work/personalised-threshold/pull/1)
 - **Risaal K P** — project collaborator.
 
 ## Features
