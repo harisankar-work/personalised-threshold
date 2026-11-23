@@ -102,6 +102,8 @@ textarea::placeholder, input::placeholder { color: #819095; }
 .visual-label { margin-top: 20px; }
 .short-textarea { min-height: 88px; }
 .field-hint { margin: 6px 0 0; font-size: 11px; color: var(--subtle); }
+.data-processing-notice { margin: 10px 0 0; padding: 11px 13px; border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 9px; background: var(--accent-soft); color: var(--ink); font-size: 12px; line-height: 1.55; }
+.data-processing-notice strong { font-weight: 700; }
 .details-block { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 20px; }
 .details-block summary, .ocr-details summary { cursor: pointer; font-size: 13px; font-weight: 650; }
 .details-block summary:hover, .ocr-details summary:hover { color: var(--accent); }
