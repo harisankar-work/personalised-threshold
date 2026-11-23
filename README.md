@@ -2,7 +2,7 @@
 
 A local web application for reviewing advertisements, exploring fictional consumer profiles, and comparing personalization options against permissions and budgets.
 
-**Reviewed source snapshot:** `49C-2026-11-23` (`release/49c-review-2026-11-23`). The [completion report](49C_FINAL_PROJECT_REPORT.md) carries the source snapshot identifier. Use the release ref below to reproduce this source snapshot. The hosted Vercel deployment matches it only after deployment from that ref or its exact commit; this documentation change does not itself deploy the app.
+**Reviewed source snapshot:** `49C-2026-11-23` (`release/49c-review-2026-11-23`). The [completion report](49C_FINAL_PROJECT_REPORT.md) carries the source snapshot identifier. Use the release ref below to reproduce this source snapshot. The live app at [kiwadoi.vercel.app](https://kiwadoi.vercel.app) was checked on 23 November 2026. It shows the newer Kiwadoi branding and copyright footer, while the pinned release still shows the older 49-C branding and snapshot footer, so the live app is not an exact match for the published source snapshot. The app page does not expose a deployed commit SHA. To reproduce the published snapshot, check out the release ref below. A README update does not deploy the app.
 
 ## Project team
 
