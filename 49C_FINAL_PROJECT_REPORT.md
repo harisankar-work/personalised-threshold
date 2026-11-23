@@ -2,9 +2,13 @@
 
 12 November 2026. Working academic demonstration. Synthetic outputs are not empirical consumer predictions.
 
+## Source snapshot and deployment
+
+This report and the campaign planner footer identify source snapshot **`49C-2026-11-23`**, published at `release/49c-review-2026-11-23`. Check out that release ref to inspect the same version of the app and report. The hosted Vercel deployment must be redeployed from this ref or its exact commit before the public site can be described as running this snapshot; this report does not claim that deployment has already happened.
+
 ## Run and demonstrate
 
-Use the existing environment: `& 'C:\ProgramData\anaconda3\python.exe' marketer_app.py --no-browser --port 8774`, then open `http://127.0.0.1:8774/` in Chrome. The running demonstration is available there. Navigation connects Campaign planner, Consumer & levels, and Research evidence. Creative/campaign form values and simulation controls persist in session storage between pages; current campaign budget headroom is shared with the comparison. Images must be reselected after navigation; image data are not stored in browser storage.
+Use the source ref above and the Windows setup documented in the [README](README.md): Python 3.14.6, Node.js 24, the `requirements-research.txt` dependencies, and `npm install`. From the repository root, start the app with `python marketer_app.py --no-browser --port 8774`, then open `http://127.0.0.1:8774/` in Chrome. Vercel uses the separate Python version specified by `.python-version`. Navigation connects Campaign planner, Consumer & levels, and Research evidence. Creative/campaign form values and simulation controls persist in session storage between pages; current campaign budget headroom is shared with the comparison. Images must be reselected after navigation; image data are not stored in browser storage.
 
 ## Delivered functionality
 
@@ -25,7 +29,9 @@ The supplied generator, CSV and README are preserved under `synthetic_demo/`; th
 
 Discomfort MAE by L0–L4 is 0.389/0.409/0.600/0.577/0.586. Only three synthetic test exposures have discomfort ≥5; two are predicted below 5. This tiny extreme group supports no safety claim. No confidence intervals are invented. Synthetic segment outcomes are descriptive generated-data averages, not held-out segment predictions. Every synthetic output panel has the requested small Synthetic data label and explanatory hover text. Existing real research retains its original measurement scales and limits. These metrics demonstrate fitting the generator, not real-world generalization.
 
-## Verification and preservation
+## Historical verification and preservation
+
+The results below are from earlier validation runs and **were not rerun for source snapshot `49C-2026-11-23`**. The README distinguishes the earlier cleaned-application suite (75 passing tests) from the fuller development suite below (127 tests, including one optional skip); these counts describe different scopes and neither is a test result for this release snapshot. The current change adds the processing notice, source identifier, licence and documentation only. To verify this snapshot, use the pinned ref and test command in the README, then record the exact commit SHA with the output.
 
 - Full suite in `PYTHONPATH=phase12_validation/compat;.phase8_vendor` with Anaconda: **127 tests run; 126 passed; 1 skipped**. The optional Phase 12 source-archive audit is skipped because PHASE12_AD_CSV/PHASE12_AD_ZIP are unset; it is not counted as a pass. The R-backed SAV adapter is used; Windows security controls are unchanged.
 - **21 real Chrome checks passed** using `final_browser_checks.cjs`: real ad image OCR, corrected-text privacy analysis, original OCR retention, seller-contact safety, individual and segment outputs, five levels, labels, real survey counts/attribution, unknown and denied permissions, L4 combined requirements, insufficient budget, real-threshold abstention, A–E options, 400 headroom from 1,000 minus 600, shared context, and narrow layout. Desktop/mobile screenshots were inspected; screenshots remain in ignored `.ocr_tmp`.
