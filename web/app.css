@@ -183,13 +183,20 @@ textarea::placeholder, input::placeholder { color: #819095; }
 .strategy-reason, .strategy-budget { color: var(--muted); font-size: 12px; line-height: 1.6; margin: 9px 0 0; }
 .strategy-budget { padding: 11px 13px; background: var(--surface-soft); border-radius: 9px; border: 1px solid var(--line); }
 .baseline-context { margin: 11px 0 0; color: var(--subtle); font-size: 11px; line-height: 1.55; }
-.strategy-table-wrap { overflow-x: auto; margin-top: 19px; }
-.strategy-table { width: 100%; border-collapse: collapse; min-width: 490px; font-size: 11px; }
-.strategy-table caption { text-align: left; font-size: 12px; font-weight: 700; margin-bottom: 9px; }
-.strategy-table th, .strategy-table td { text-align: left; padding: 9px 6px; border-bottom: 1px solid var(--line); }
-.strategy-table th { color: var(--subtle); font-size: 10px; line-height: 1.3; }
-.strategy-table td:not(:first-child) { font-variant-numeric: tabular-nums; white-space: nowrap; }
-.strategy-table th:first-child, .strategy-table td:first-child { padding-left: 0; }
+.strategy-options { display: grid; gap: 9px; margin-top: 19px; }
+.strategy-option { min-width: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.strategy-option summary { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 13px; cursor: pointer; list-style-position: inside; }
+.strategy-option summary strong { min-width: 0; font-size: 12px; line-height: 1.45; }
+.option-status { flex: 0 1 auto; color: var(--subtle); font-size: 10px; line-height: 1.45; text-align: right; }
+.option-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0 13px 14px; }
+.option-details > div { min-width: 0; }
+.option-details dt { color: var(--subtle); font-size: 10px; line-height: 1.4; }
+.option-details dd { margin: 3px 0 0; font-size: 12px; line-height: 1.45; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) {
+  .strategy-option summary { flex-direction: column; gap: 5px; }
+  .option-status { text-align: left; }
+  .option-details { grid-template-columns: 1fr; gap: 10px; }
+}
 .strategy-hint { color: var(--subtle); font-size: 11px; line-height: 1.55; }
 .scenario-result { margin-top: 18px; padding: 15px; border: 1px solid var(--line); border-radius: 11px; background: var(--surface-soft); }
 .scenario-result h4, .persona-details h4 { margin: 0; font-size: 12px; }
