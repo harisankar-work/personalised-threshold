@@ -43,6 +43,12 @@ a { color: var(--accent); }
 .header-link.current { color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 8px; text-decoration-thickness: 2px; }
 
 .intro { padding: 54px 0 34px; max-width: 740px; }
+.intro-copy { max-width: 625px; margin: 17px 0 0; color: var(--muted); font-size: 16px; line-height: 1.6; }
+.intro-scope { max-width: 625px; margin: 10px 0 0; color: var(--subtle); font-size: 13px; line-height: 1.5; }
+.intro-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 11px 16px; margin-top: 17px; }
+.intro-actions > span { color: var(--subtle); font-size: 11px; line-height: 1.5; }
+.intro-example { width: auto; min-height: 42px; margin: 0; gap: 14px; padding: 0 15px; }
+.intro-guide { max-width: 740px; margin: 11px 0 0; color: var(--subtle); font-size: 13px; line-height: 1.55; }
 .eyebrow, .step-label { margin: 0 0 10px; font-size: 11px; line-height: 1.3; font-weight: 750; color: var(--accent); letter-spacing: .13em; }
 .intro h1 { margin: 0; font-size: clamp(34px, 4.4vw, 54px); line-height: 1.08; letter-spacing: -.054em; font-weight: 680; }
 .intro > p:last-child { max-width: 625px; margin: 17px 0 0; color: var(--muted); font-size: 16px; line-height: 1.6; }
@@ -230,6 +236,8 @@ textarea::placeholder, input::placeholder { color: #819095; }
 .section-nav a { padding: 7px 13px; border-radius: 100px; border: 1px solid var(--line); background: var(--surface); text-decoration: none; font-size: 12px; font-weight: 650; }
 .section-nav a:hover { background: var(--accent-soft); }
 .research-section { padding-top: 61px; scroll-margin-top: 20px; }
+.research-takeaway { margin: -5px 0 22px; padding: 13px 16px; border-left: 3px solid var(--accent); border-radius: 0 9px 9px 0; background: var(--surface); color: var(--muted); font-size: 12px; line-height: 1.6; }
+.research-takeaway strong { color: var(--ink); }
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; }
 .section-heading h2 { margin: 0; font-size: clamp(26px, 3vw, 36px); line-height: 1.16; letter-spacing: -.045em; }
 .section-intro { max-width: 780px; color: var(--muted); font-size: 14px; line-height: 1.65; margin: 14px 0 22px; }
