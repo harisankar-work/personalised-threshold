@@ -2,6 +2,8 @@
 
 A local web application for reviewing advertisements, exploring fictional consumer profiles, and comparing personalization options against permissions and budgets.
 
+**Reviewed source snapshot:** `49C-2026-11-23` (`release/49c-review-2026-11-23`). The campaign planner footer and [completion report](49C_FINAL_PROJECT_REPORT.md) carry the same identifier. Use the release ref below to reproduce this source snapshot. The hosted Vercel deployment matches it only after deployment from that ref or its exact commit; this documentation change does not itself deploy the app.
+
 ## Project team
 
 49-C is a group academic project maintained collaboratively in this shared repository.
@@ -34,7 +36,7 @@ The deployment upload is allowlisted by `.vercelignore` so local datasets, check
 You need Python, Node.js/npm, and a modern browser. The application was tested with Python 3.14.6 and Node.js 24 on Windows. Other environments have not been verified.
 
 ```powershell
-git clone https://github.com/harisankar-dev/personalised-threshold.git
+git clone --branch release/49c-review-2026-11-23 --single-branch https://github.com/harisankar-work/personalised-threshold.git
 cd personalised-threshold
 
 python -m venv .venv
@@ -146,9 +148,22 @@ Run the application regression suite from the repository root:
 python -m unittest discover -q
 ```
 
-The cleaned distribution passes **75 application tests with no failures or skips**, verified in an isolated copy containing only the retained files. These cover creative cues, input validation, empirical abstention, STP budgets/permissions, synthetic simulation and segmentation.
+**Test record for this source snapshot:** tests have not been rerun for `49C-2026-11-23` as part of this documentation and notice change. The counts below are historical results from different scopes; do not cite either as a test result for this snapshot until rerun from the pinned release ref.
 
-The full development workspace previously ran 128 tests (127 passing, one optional research-source audit skipped) and 21 real Chrome workflow checks. Historical research tests, local browser fixtures and machine-specific test scripts are excluded from this application-focused distribution.
+- The earlier cleaned application distribution reported **75 tests passed, no failures or skips** with `python -m unittest discover -q`.
+- The earlier full development workspace reported **127 tests: 126 passed and 1 optional research-source audit skipped**, plus **21 real Chrome workflow checks**. These used additional development-only paths and are not the cleaned application suite.
+
+To reproduce tests for this snapshot, first checkout the release ref above, install the dependencies in the Windows setup section, and run the application suite command shown here from the repository root:
+
+```powershell
+python -m unittest discover -q
+```
+
+Record the output with the exact commit SHA checked out. The optional full research replay requires historical development-only files and source archives that are intentionally not distributed in this cleaned repository.
+
+## Licence
+
+The project-authored code is released under the MIT License; see [LICENSE](LICENSE). The licence does not cover research datasets, third-party materials, or results derived from sources whose terms restrict redistribution. Check each source's terms before downloading or reusing its data.
 
 ## Research and data use
 
