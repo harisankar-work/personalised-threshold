@@ -8,7 +8,12 @@ const fileInput = $('image-file');
 const dropZone = $('drop-zone');
 const errorBox = $('form-error');
 let mode = 'text';
+const hostedImageLimitMb = 3;
+const localImageLimitMb = 10;
+const bytesPerMb = 1024 * 1024;
 let selectedFile = null;
+let pendingFile = null;
+let imageConfigRequest;
 let previewUrl = null;
 let lastOcr = null;
 let inputRevision = 0;
@@ -57,6 +62,7 @@ function setMode(next) {
   imageTab.setAttribute('aria-selected', String(!isText));
   textPanel.hidden = !isText;
   imagePanel.hidden = isText;
+  if (!isText) getImageConfig().catch(() => {});
   hideError();
   invalidateResult();
 }
@@ -86,6 +92,7 @@ function showError(message) { errorBox.textContent = message; errorBox.hidden = 
 
 function removeFile() {
   selectedFile = null;
+  pendingFile = null;
   fileInput.value = '';
   if (previewUrl) URL.revokeObjectURL(previewUrl);
   previewUrl = null;
@@ -95,17 +102,29 @@ function removeFile() {
   hideError();
   invalidateResult();
 }
-function setFile(file) {
+async function setFile(file) {
   if (!file) return;
   removeFile();
   const allowed = ['image/png', 'image/jpeg', 'image/webp', 'image/bmp', 'image/tiff'];
   if (!allowed.includes(file.type)) { showError('Choose a PNG, JPG, WebP, BMP, or TIFF image.'); return; }
-  if (!file.size || file.size > 10 * 1024 * 1024) { showError('Choose a non-empty image under 10 MB.'); return; }
+  if (!file.size) { showError('Choose a non-empty image.'); return; }
+  pendingFile = file;
+  try {
+    const config = await getImageConfig();
+    if (pendingFile !== file || mode !== 'image') return;
+    checkImageSize(file, config.maxMb);
+  } catch (error) {
+    if (pendingFile === file && mode === 'image') showError(error.message);
+    return;
+  } finally {
+    if (pendingFile === file) pendingFile = null;
+  }
+  hideError();
   selectedFile = file;
   previewUrl = URL.createObjectURL(file);
   $('preview-img').src = previewUrl;
   $('file-name').textContent = file.name;
-  $('file-size').textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+  $('file-size').textContent = `${(file.size / bytesPerMb).toFixed(2)} MB`;
   $('drop-content').hidden = true;
   $('image-preview').hidden = false;
 }
@@ -165,6 +184,30 @@ async function readApiResponse(response, fallback) {
   const data = await response.json();
   if (!response.ok) throw new Error(data.error || fallback);
   return data;
+}
+
+function getImageConfig() {
+  if (!imageConfigRequest) {
+    const fallback = 'Image analysis is temporarily unavailable. Try again or paste the ad copy.';
+    imageConfigRequest = fetch('/api/config')
+      .then(response => readApiResponse(response, fallback))
+      .then(({hosted_ocr: hosted}) => {
+        const maxMb = hosted ? hostedImageLimitMb : localImageLimitMb;
+        $('image-limit').textContent = String(maxMb);
+        return {hosted, maxMb};
+      })
+      .catch(() => {
+        imageConfigRequest = undefined;
+        throw new Error(fallback);
+      });
+  }
+  return imageConfigRequest;
+}
+
+function checkImageSize(file, maxMb) {
+  if (file.size > maxMb * bytesPerMb) {
+    throw new Error(`Choose an image up to ${maxMb} MB, or paste the ad copy.`);
+  }
 }
 
 function displayMoney(value, currency) {
@@ -344,6 +387,7 @@ $('ad-form').addEventListener('submit', async (event) => {
   hideError();
   const copy = mode === 'text' ? textInput.value.trim() : '';
   const visual = mode === 'image' ? $('visual-description').value.trim() : '';
+  if (mode === 'image' && pendingFile) { showError('Wait for the image to finish loading.'); return; }
   if (mode === 'text' && !copy) { showError('Paste ad copy to analyze.'); textInput.focus(); return; }
   if (mode === 'image' && !selectedFile && !visual) { showError('Choose an image or add a visual description.'); fileInput.focus(); return; }
   const revision = inputRevision;
@@ -354,14 +398,16 @@ $('ad-form').addEventListener('submit', async (event) => {
   const button = $('analyze-btn'); button.disabled = true;
   $('button-text').textContent = 'Analyzing…'; setResultState('loading');
   try {
-    const imageData = file ? await readDataUrl(file) : null;
     let hostedOcr = null;
-    let analysisImage = imageData;
-    if (imageData) {
-      const config = await readApiResponse(await fetch('/api/config'), 'Image analysis is temporarily unavailable. Try again or paste the ad copy.');
+    let analysisImage = null;
+    if (file) {
+      const config = await getImageConfig();
       if (revision !== inputRevision) return;
-      if (config.hosted_ocr) {
-        if (file.size > 3 * 1024 * 1024) throw new Error('Hosted image OCR supports up to 3 MB. Resize the image or paste its copy.');
+      checkImageSize(file, config.maxMb);
+      const imageData = await readDataUrl(file);
+      if (revision !== inputRevision) return;
+      analysisImage = imageData;
+      if (config.hosted) {
         const response = await fetch('/api/ocr', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image_data:imageData})});
         hostedOcr = await readApiResponse(response, 'Image OCR is temporarily unavailable. Try again or paste the ad copy.');
         analysisImage = null;
