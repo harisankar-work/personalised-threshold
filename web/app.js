@@ -18,11 +18,34 @@ let previewUrl = null;
 let lastOcr = null;
 let inputRevision = 0;
 let requestInFlight = false;
+let expandSampleOptions = false;
 
-const examples = {
-  generic: 'Discover our new fall collection. Shop now and save 20%.',
-  cart: 'Your cart is waiting. Complete your purchase today.',
-  combined: 'Based on your recent running-shoe searches, previous footwear purchases and location in Goa, we selected these styles for you.'
+const sampleCampaignDefaults = {
+  currency: 'INR', objective: 'conversions', targeting_method: 'generic',
+  product_category: 'retail', channel: 'social', data_source: 'none',
+  consent_status: 'unknown', audience_eligibility: 'unknown',
+  total_budget: '50000', committed_spend: '30000',
+  revision_cost: '5000', targeting_cost: '3000', variant_cost: '4000',
+  segmentation_cost: '2000', management_cost: '1000', variant_count: '2',
+  contribution_margin: '500', audience_reach: '10000', scenario_option: 'one_variant',
+  worst_incremental_conversions: '', central_incremental_conversions: '', best_incremental_conversions: ''
+};
+const sampleAds = {
+  creepy: {
+    text: 'Still thinking about the running shoes you searched for last night? We saw your cart activity. Buy now before we track the next pair.',
+    targeting: 'Recent browsing and cart activity',
+    campaign: {targeting_method: 'behavioral', data_source: 'first_party_behavior'}
+  },
+  urgent: {
+    text: 'Last chance! Only 2 left. Buy now before midnight and save 70%!!!',
+    targeting: '',
+    campaign: {}
+  },
+  safe: {
+    text: 'Explore our everyday sneakers, designed for comfortable miles. Browse the collection and choose the fit that works for you.',
+    targeting: '',
+    campaign: {}
+  }
 };
 const cueNames = {
   private_activity_claim: 'Claimed knowledge of private offline activity',
@@ -80,13 +103,25 @@ textInput.addEventListener('input', () => {
   hideError();
   invalidateResult();
 });
-$('try-example-btn').addEventListener('click', () => $('example-generic').click());
-document.querySelectorAll('.example-chip').forEach((button) => button.addEventListener('click', () => {
+function loadSampleAd(name) {
+  if (requestInFlight) return;
+  const sample = sampleAds[name];
+  if (!sample) return;
+
   setMode('text');
-  textInput.value = examples[button.dataset.example];
+  textInput.value = sample.text;
+  $('targeting').value = sample.targeting;
+  Object.entries(campaignFields).forEach(([key, id]) => {
+    $(id).value = sample.campaign[key] ?? sampleCampaignDefaults[key] ?? '';
+  });
+  $('campaign-details').open = false;
+  expandSampleOptions = true;
   textInput.dispatchEvent(new Event('input'));
-  textInput.focus();
-}));
+  $('analyze-btn').click();
+}
+document.querySelectorAll('[data-sample]').forEach((button) => {
+  button.addEventListener('click', () => loadSampleAd(button.dataset.sample));
+});
 
 function hideError() { errorBox.hidden = true; errorBox.textContent = ''; }
 function showError(message) { errorBox.textContent = message; errorBox.hidden = false; }
@@ -256,6 +291,7 @@ function renderStrategy(strategy) {
   (strategy.options || []).forEach((option) => {
     const card = document.createElement('details');
     card.className = 'strategy-option';
+    card.open = expandSampleOptions;
     const summary = document.createElement('summary');
     const name = document.createElement('strong'); name.textContent = option.name;
     const status = document.createElement('span');
@@ -387,6 +423,7 @@ function renderResult(data) {
   const contextEntered = Object.entries(campaignInput()).some(([key,value]) => !['currency','scenario_option'].includes(key) && value && value !== 'unknown');
   renderCompatibility(contextEntered ? data.compatibility : null);
   renderStrategy(contextEntered ? data.strategy : null);
+  expandSampleOptions = false;
   setResultState('content');
   if (window.matchMedia('(max-width: 850px)').matches) $('result-title').scrollIntoView({behavior: 'smooth', block: 'start'});
 }
