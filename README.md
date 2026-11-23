@@ -2,7 +2,7 @@
 
 A local web application for reviewing advertisements, exploring fictional consumer profiles, and comparing personalization options against permissions and budgets.
 
-**Reviewed source snapshot:** `49C-2026-11-23` (`release/49c-review-2026-11-23`). The campaign planner footer and [completion report](49C_FINAL_PROJECT_REPORT.md) carry the same identifier. Use the release ref below to reproduce this source snapshot. The hosted Vercel deployment matches it only after deployment from that ref or its exact commit; this documentation change does not itself deploy the app.
+**Reviewed source snapshot:** `49C-2026-11-23` (`release/49c-review-2026-11-23`). The [completion report](49C_FINAL_PROJECT_REPORT.md) carries the source snapshot identifier. Use the release ref below to reproduce this source snapshot. The hosted Vercel deployment matches it only after deployment from that ref or its exact commit; this documentation change does not itself deploy the app.
 
 ## Project team
 
