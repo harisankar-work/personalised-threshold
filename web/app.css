@@ -88,6 +88,13 @@ textarea::placeholder, input::placeholder { color: #819095; }
 .example-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .example-chip { border: 1px solid var(--line); background: var(--surface); border-radius: 100px; padding: 7px 11px; color: var(--muted); font-size: 12px; font-weight: 600; }
 .example-chip:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.sample-presets { margin: 0 0 12px; }
+.sample-presets .field-hint { margin: 0 0 8px; }
+.methodology-details { margin: 24px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.methodology-details > summary { cursor: pointer; padding: 15px 18px; color: var(--ink); font-size: 14px; font-weight: 700; }
+.methodology-details > div { padding: 0 18px 16px; color: var(--muted); font-size: 12px; line-height: 1.65; }
+.methodology-details p { margin: 9px 0; }
+.methodology-link { text-align: center; font-size: 12px; }
 .optional { color: var(--subtle); font-weight: 450; }
 
 .drop-zone { position: relative; min-height: 214px; border: 1.5px dashed #a9bfbd; border-radius: 14px; background: var(--surface-soft); transition: background .15s, border-color .15s; }
@@ -280,7 +287,7 @@ textarea::placeholder, input::placeholder { color: #819095; }
 .about-score { display: grid; grid-template-columns: .85fr 1.15fr; gap: 40px; padding: 40px 2px 44px; margin-top: 24px; border-top: 1px solid var(--line); }
 .about-score h2 { margin: 0; max-width: 365px; font-size: 20px; font-weight: 600; letter-spacing: -.02em; line-height: 1.35; }
 .about-score > p { max-width: 590px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
-footer { border-top: 1px solid var(--line); padding: 23px 0 34px; color: var(--subtle); font-size: 11px; }
+footer { border-top: 1px solid var(--line); padding: 23px 0 34px; color: var(--subtle); font-size: 11px; text-align: center; }
 
 @media (max-width: 850px) {
   .workspace { grid-template-columns: 1fr; }

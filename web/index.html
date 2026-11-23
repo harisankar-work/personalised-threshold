@@ -24,14 +24,9 @@
 
     <main>
       <section class="intro" aria-labelledby="page-title">
-        <p class="eyebrow">KIWADOI · PRE-LAUNCH REVIEW</p>
-        <h1 id="page-title">Review your ad. Understand your audience.</h1>
-        <p class="intro-copy">Screen ad copy or an image. Explore consumer segments when you need audience context.</p>
-        <p class="intro-scope">Profiles are fictional, and this tool does not predict how a real audience will respond.</p>
-        <div class="intro-actions">
-          <button type="button" id="try-example-btn" class="primary-button intro-example">Try an example <span aria-hidden="true">→</span></button>
-          <span>Loads a sample ad; select Analyze ad to see matched cues.</span>
-        </div>
+        <p class="eyebrow">KIWADOI · PRE-LAUNCH PRIVACY &amp; PRESSURE LINTER</p>
+        <h1 id="page-title">Check your ad for privacy and pressure cues.</h1>
+        <p class="intro-copy">Review copy or an image before launch. Reference study benchmarks add context; they do not predict your audience.</p>
       </section>
 
       <div class="workspace">
@@ -52,18 +47,18 @@
           <form id="ad-form">
             <div id="text-panel" role="tabpanel" aria-labelledby="text-tab">
               <label for="ad-text" class="field-label">Ad copy</label>
-              <textarea id="ad-text" placeholder="Paste the exact words a customer would see…" maxlength="20000" aria-describedby="text-help text-processing"></textarea>
+              <div class="sample-presets" aria-label="One-click sample ads">
+                <p id="sample-help" class="field-hint">Try a fictional sample. It fills illustrative campaign figures and runs the existing screen and break-even check.</p>
+                <div class="example-row">
+                  <button type="button" class="example-chip" data-sample="creepy">Creepy retargeting ad</button>
+                  <button type="button" class="example-chip" data-sample="urgent">High-urgency promo</button>
+                  <button type="button" class="example-chip" data-sample="safe">Safe brand copy</button>
+                </div>
+              </div>
+              <textarea id="ad-text" placeholder="Paste the exact words a customer would see…" maxlength="20000" aria-describedby="sample-help text-help text-processing"></textarea>
               <p id="text-help" class="field-hint">One advertisement at a time · English text</p>
               <p id="text-processing" class="data-processing-notice" role="note"><strong>Privacy notice.</strong> On the hosted app, submitted ad text and any targeting or campaign details are sent to Vercel servers for processing. Do not submit private customer records or confidential material; only submit material you are authorized to share.</p>
               <div class="field-footer"><span>Include the headline and body copy.</span><span id="char-count">0 characters</span></div>
-              <div class="examples">
-                <span class="examples-label">Try an example</span>
-                <div class="example-row">
-                  <button type="button" id="example-generic" class="example-chip" data-example="generic">Generic offer</button>
-                  <button type="button" class="example-chip" data-example="cart">Cart reminder</button>
-                  <button type="button" class="example-chip" data-example="combined">Combined signals</button>
-                </div>
-              </div>
             </div>
 
             <div id="image-panel" role="tabpanel" aria-labelledby="image-tab" hidden>
@@ -245,7 +240,7 @@
               <div class="strategy-options" id="strategy-options" aria-label="Campaign options"></div>
               <p class="strategy-hint">Expand an option for cost and break-even details. Break-even is a financial check, not predicted performance.</p>
               <div id="scenario-result" class="scenario-result" hidden><h4>What-if sensitivity</h4><p id="scenario-label"></p><div id="scenario-values" class="scenario-values"></div></div>
-              <details class="persona-details"><summary>Exploratory consumer profiles</summary><p>Survey responses from unrelated people. These profiles cannot identify your campaign audience or justify segment-specific spending.</p><div id="persona-list"></div></details>
+              <details class="persona-details"><summary>Reference Study Benchmarks</summary><p>Aggregate survey benchmarks show how separate study cohorts rated personalization and unsolicited-ad cues. They add context to similar signals; they are not your campaign audience or a response prediction.</p><div id="persona-list"></div></details>
               <ul id="strategy-warnings" class="strategy-warnings"></ul>
             </section>
           </div>
@@ -254,7 +249,7 @@
 
       <section id="about-score" class="about-score" aria-labelledby="about-title">
         <div><p class="eyebrow">ABOUT THE SCORE</p><h2 id="about-title">How to read the score</h2></div>
-        <p>The 0–10 score counts matched privacy and pressure cues. It is a screening aid, not a prediction of how consumers will respond. Image checks read printed words only; they do not assess visual layout. <a href="/research">Explore the research</a>.</p>
+        <p>The score summarizes matched text cues for a pre-launch review. Separate survey benchmarks provide context. <a href="/research#methodology-limits">Methodology &amp; Limits</a>.</p>
       </section>
     </main>
     <footer>© 2026 Kiwadoi</footer>
