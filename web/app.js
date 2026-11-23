@@ -333,9 +333,6 @@ function renderResult(data) {
   $('tier-pill').textContent = tierText;
   $('tier-pill').className = `tier-pill ${style}`;
   $('score-number').textContent = data.score_out_of_10 ?? '—';
-  $('score-breakdown').hidden = data.score_out_of_10 === null;
-  $('privacy-score').textContent = data.privacy_score ?? '—';
-  $('pressure-score').textContent = data.pressure_score ?? '—';
   const scale = $('score-scale');
   scale.className = `score-scale ${style}`;
   scale.replaceChildren();
