@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
+  <meta name="application-source-snapshot" content="49C-2026-11-23">
   <title>49-C · Pre-launch campaign planner</title>
   <link rel="stylesheet" href="/app.css">
   <script src="/app.js" defer></script>
@@ -46,8 +47,9 @@
           <form id="ad-form">
             <div id="text-panel" role="tabpanel" aria-labelledby="text-tab">
               <label for="ad-text" class="field-label">Ad copy</label>
-              <textarea id="ad-text" placeholder="Paste the exact words a customer would see…" maxlength="20000" aria-describedby="text-help"></textarea>
+              <textarea id="ad-text" placeholder="Paste the exact words a customer would see…" maxlength="20000" aria-describedby="text-help text-processing"></textarea>
               <p id="text-help" class="field-hint">One advertisement at a time · English text</p>
+              <p id="text-processing" class="data-processing-notice" role="note"><strong>Privacy notice.</strong> On the hosted app, submitted ad text is sent to Vercel servers for processing. Do not submit private customer records or confidential material; only submit creatives you are authorized to share.</p>
               <div class="field-footer"><span>Include the headline and body copy.</span><span id="char-count">0 characters</span></div>
               <div class="examples">
                 <span class="examples-label">Try an example</span>
@@ -62,7 +64,7 @@
             <div id="image-panel" role="tabpanel" aria-labelledby="image-tab" hidden>
               <label class="field-label" for="image-file">Ad image</label>
               <div id="drop-zone" class="drop-zone">
-                <input id="image-file" type="file" accept="image/png,image/jpeg,image/webp,image/bmp,image/tiff" aria-describedby="image-help">
+                <input id="image-file" type="file" accept="image/png,image/jpeg,image/webp,image/bmp,image/tiff" aria-describedby="image-help image-processing">
                 <div id="drop-content" class="drop-content">
                   <span class="upload-symbol" aria-hidden="true">↑</span>
                   <strong>Drop an image here</strong>
@@ -77,6 +79,7 @@
               </div>
               <label class="field-label visual-label" for="visual-description">Describe anything important that is not written in the image <span class="optional">Optional</span></label>
               <textarea id="visual-description" class="short-textarea" placeholder="For example: a map pin showing the customer's home" maxlength="5000"></textarea>
+              <p id="image-processing" class="data-processing-notice" role="note"><strong>Privacy notice.</strong> On the hosted app, submitted ad images and descriptions are sent to Vercel servers for processing. Do not submit private customer records or confidential material; only submit creatives you are authorized to share.</p>
               <p class="field-hint">OCR reads printed English text only. Your description is screened as text; visual objects are not independently recognized.</p>
             </div>
 
@@ -256,7 +259,7 @@
         <p>The 0–10 number combines privacy cues and high-pressure wording, capped at 10. It is not a probability or a measured reaction. Available surveys rate ads in general; none rates the creatives uploaded here. Image analysis reads printed words; it does not judge the visual layout or whether an ad obstructs a page. Describe visual details you want considered. <a href="/research">Explore the separate research results</a>.</p>
       </section>
     </main>
-    <footer>49C · Personalization Threshold project</footer>
+    <footer>49C · Personalization Threshold project · Source snapshot 49C-2026-11-23</footer>
   </div>
 </body>
 </html>
