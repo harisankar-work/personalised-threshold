@@ -94,3 +94,14 @@ Thumbs.db
 !/test_vercel_routes.py
 
 !/.python-version
+
+# Automated browser tests and workflow (never commit generated artifacts)
+!/.github/
+!/.github/workflows/
+!/.github/workflows/kiwadoi-ci.yml
+!/browser_tests/
+!/browser_tests/test_browser.py
+!/browser_tests/README.md
+!/requirements-browser.txt
+!/test_evidence_presentation.py
+/browser-test-artifacts/
