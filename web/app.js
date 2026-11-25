@@ -366,7 +366,7 @@ function renderResult(data) {
   $('ocr-correction-status').textContent = '';
   const tier = data.tier || 'needs_review';
   const style = tier.startsWith('low') ? 'low' : tier.startsWith('moderate') ? 'moderate' : tier.startsWith('high') ? 'high' : 'review';
-  const tierText = {low: 'Low screening tier', moderate: 'Moderate screening tier', high: 'High screening tier', review: 'Needs review'}[style];
+  const tierText = {low: 'Low rubric score', moderate: 'Moderate rubric score', high: 'High rubric score', review: 'Needs review'}[style];
   $('tier-pill').textContent = tierText;
   $('tier-pill').className = `tier-pill ${style}`;
   $('score-number').textContent = data.score_out_of_10 ?? '—';
@@ -419,7 +419,9 @@ function renderResult(data) {
   $('ocr-details').hidden = lastOcr === null;
   $('ocr-text').textContent = data.ocr_text || 'No readable text was found.';
   $('result-note').textContent = data.reason || 'Exploratory rubric score only. Not a measured consumer reaction.';
-  $('threshold-status').textContent = data.threshold_decision?.reason || 'Insufficient evidence for a consumer-level recommendation from the current data.';
+  $('threshold-status').textContent = data.threshold_decision?.status === 'insufficient_evidence' && data.threshold_decision.reason
+    ? data.threshold_decision.reason + ' Cue screening does not establish consumer acceptance.'
+    : 'Individual consumer acceptance cannot be determined from the currently supported evidence. No consumer-level recommendation is made.';
   const contextEntered = Object.entries(campaignInput()).some(([key,value]) => !['currency','scenario_option'].includes(key) && value && value !== 'unknown');
   renderCompatibility(contextEntered ? data.compatibility : null);
   renderStrategy(contextEntered ? data.strategy : null);

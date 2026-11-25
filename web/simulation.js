@@ -56,7 +56,7 @@ function renderComparison(result) {
     const relevance = document.createElement('td');
     relevance.textContent = level.relevance.toFixed(2);
     const status = document.createElement('td');
-    status.textContent = level.eligible ? 'Eligible · cost ' + level.cost : 'Review required';
+    status.textContent = level.eligible ? 'Scenario eligible · cost ' + level.cost : 'Review required';
     if (!level.eligible) {
       const details = document.createElement('details');
       const summary = document.createElement('summary');
@@ -70,7 +70,7 @@ function renderComparison(result) {
     return row;
   });
 
-  const choice = result.recommended_level ? 'Demonstration choice: ' + result.recommended_level + '. ' : 'No demonstrated choice. ';
+  const choice = result.recommended_level ? 'Synthetic scenario choice: ' + result.recommended_level + '. ' : 'No synthetic scenario choice. ';
   el('sim-recommendation').textContent = choice + result.reason;
   el('sim-levels').replaceChildren(...rows);
 }

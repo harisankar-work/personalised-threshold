@@ -16,8 +16,8 @@
         <span class="brand-mark" aria-hidden="true">K</span>
         <span class="brand-name">Kiwadoi</span>
       </div>
-      <nav class="header-nav" aria-label="Main navigation"><a class="header-link" href="/simulation">Consumers & segments</a>
-        <a class="header-link current" href="/" aria-current="page">Campaign planner</a>
+      <nav class="header-nav" aria-label="Main navigation"><a class="header-link current" href="/" aria-current="page">Campaign planner</a>
+        <a class="header-link" href="/simulation">Consumers &amp; segments</a>
         <a class="header-link" href="/research">Research evidence</a>
       </nav>
     </header>
@@ -27,6 +27,7 @@
         <p class="eyebrow">KIWADOI · PRE-LAUNCH PRIVACY &amp; PRESSURE LINTER</p>
         <h1 id="page-title">Check your ad for privacy and pressure cues.</h1>
         <p class="intro-copy">Review copy or an image before launch. Reference study benchmarks add context; they do not predict your audience.</p>
+        <aside class="evidence-status" aria-label="Research status"><strong>Academic research prototype</strong><p>Creative screening is rule-based; consumer simulations are fictional. Individual personalization thresholds have not been independently validated.</p><a href="/research#threshold">Explore the evidence limits</a></aside>
       </section>
 
       <div class="workspace">
@@ -52,7 +53,7 @@
                 <div class="example-row">
                   <button type="button" class="example-chip" data-sample="creepy">Creepy retargeting ad</button>
                   <button type="button" class="example-chip" data-sample="urgent">High-urgency promo</button>
-                  <button type="button" class="example-chip" data-sample="safe">Safe brand copy</button>
+                  <button type="button" class="example-chip" data-sample="safe">Generic brand copy</button>
                 </div>
               </div>
               <textarea id="ad-text" placeholder="Paste the exact words a customer would see…" maxlength="20000" aria-describedby="sample-help text-help text-processing"></textarea>
@@ -197,13 +198,14 @@
           </div>
 
           <div id="result-content" aria-live="polite" hidden>
-            <p class="score-kicker">Matched-cue score</p>
+            <section class="evidence-status assessment-status" aria-labelledby="empirical-decision-title"><p class="step-label">EMPIRICAL DECISION</p><h3 id="empirical-decision-title">Insufficient evidence — abstain</h3><p id="threshold-status">Individual consumer acceptance cannot be determined from the current evidence.</p><a href="/research#threshold">Why the system abstains</a></section>
+            <p class="score-kicker">RULE-BASED EDITORIAL SCREENING</p>
             <div class="score-topline">
-              <span id="tier-pill" class="tier-pill">Low screening tier</span>
+              <span id="tier-pill" class="tier-pill">Low rubric score</span>
             </div>
             <div class="score-display"><span id="score-number">0</span><span class="score-denominator">/10</span></div>
             <div id="score-scale" class="score-scale" aria-label="Exploratory cue score out of 10"></div>
-            <p class="score-disclaimer">Rule-based screening of observable cues, not a measured consumer response.</p>
+            <p class="score-disclaimer">Weighted rubric of observable text cues, not a probability of discomfort or a guarantee of consumer acceptance.</p>
             <div class="input-review"><strong>Input analyzed</strong><p id="input-summary"></p></div>
 
             <div class="result-divider"></div>
@@ -219,11 +221,6 @@
               <p id="ocr-text"></p><label class="field-label" for="corrected-ocr">Correct extracted English text</label><textarea id="corrected-ocr" maxlength="20000"></textarea><button id="reanalyze-ocr" type="button" class="text-button">Analyze corrected text</button><p id="ocr-correction-status" class="field-hint"></p>
             </details>
             <p id="result-note" class="result-note"></p>
-            <details class="threshold-note"><summary>Research scope</summary>
-              <strong>Personalization threshold</strong>
-              <p id="threshold-status">Insufficient evidence for a consumer-level recommendation from the current data.</p>
-              <a href="/research#threshold">See the evidence gap</a>
-            </details>
             <section id="compatibility-result" class="strategy-result" aria-labelledby="compatibility-title" hidden>
               <div class="strategy-heading"><p class="step-label">CONSUMER–AD COMPATIBILITY</p><h3 id="compatibility-title">Evidence check</h3><span class="evidence-tag experimental">Research-informed</span></div>
               <p id="compatibility-summary" class="strategy-reason"></p>
@@ -252,7 +249,7 @@
         <p>The score summarizes matched text cues for a pre-launch review. Separate survey benchmarks provide context. <a href="/research#methodology-limits">Methodology &amp; Limits</a>.</p>
       </section>
     </main>
-    <footer>© 2026 Kiwadoi</footer>
+    <footer><span>© 2026 Kiwadoi · AMLBT 49C · Academic research prototype</span><nav class="footer-links" aria-label="Project resources"><a href="https://github.com/harisankar-work/personalised-threshold">Source code</a><a href="https://github.com/harisankar-work/personalised-threshold/blob/main/README.md">Run instructions</a><a href="/research#methodology-limits">Methodology &amp; limits</a></nav></footer>
   </div>
 </body>
 </html>
