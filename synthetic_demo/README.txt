@@ -27,6 +27,8 @@ Do not merge synthetic rows with real survey records for model validation.
 Use a prominent 'SIMULATED DEMO' label in any user-facing interface.
 
 Files:
-- 49c_synthetic_consumer_exposures.csv — data
-- generate_49c_synthetic.py — exact deterministic generator
-- 49c_synthetic_consumer_exposures.xlsx — Excel workbook with data and readme
+- exposures.csv: tracked synthetic data consumed by train.py
+- generate_49c_synthetic.py: deterministic generator, writes 49c_synthetic_consumer_exposures.csv
+- train.py and model.json: trainer and tracked synthetic model
+
+See ../REPRODUCIBILITY.md for a replay in a separate working directory.

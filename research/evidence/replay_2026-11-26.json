@@ -1,0 +1,183 @@
+{
+  "run_date": "2026-11-26",
+  "app_baseline_commit": "a2fe394f6011fea12b74295af8316cb15fda4790",
+  "research_code_origin_commit": "4431ea741422470ba77081e9056df41bde703dd3",
+  "historical_creative_rubric_commit": "19c04024c16f0e92debc5b7eb7fa88b95b0d6486",
+  "environment": {
+    "os": "Linux x86-64",
+    "python": "3.12.14",
+    "node": "24.22.3",
+    "npm": "11.19.1",
+    "python_dependencies": "research/requirements-replay.txt",
+    "node_dependencies": "package-lock.json"
+  },
+  "comparison": {
+    "against": "Historical aggregate outputs and the earlier 6 November V2 draft. The five-page manuscript reviewed in the 49C-V2 feedback was unavailable.",
+    "inputs": "Original project-held copies, with all six UPAD file checksums matching Zenodo v1. Criteo model and ranking start from the historical 200,000-row derived sample.",
+    "float_relative_tolerance": 1e-11,
+    "float_absolute_tolerance": 1e-12,
+    "normalized_field": "source_file path separators only",
+    "matched_json": [
+      "research/evidence/audit.json",
+      "research/evidence/associations.json",
+      "results/baseline.json",
+      "results/survey_phase_v1.json",
+      "results/survey_phase_v2.json",
+      "results/survey_phase_v3_uncertainty.json",
+      "results/phase7_segmentation_v1.json",
+      "results/ad_blockers_intrusion_v1.json",
+      "results/vietnam_privacy_trust_v1.json",
+      "results/criteo_visit_uplift_v3.json",
+      "results/criteo_uplift_validation_v3.json",
+      "research/evidence/external_creative_audit.json",
+      "synthetic_demo/model.json"
+    ],
+    "matched_csv_records": {
+      "synthetic_demo/exposures.csv": 1500,
+      "historical_screen_dataset": 60,
+      "historical_external_creative_cases": 60
+    },
+    "creative_row_exports": "Compared locally against historical files. This evidence contains aggregate counts only."
+  },
+  "upad": {
+    "source_rows": 300000,
+    "event_rows_matching_ad": 300000,
+    "event_rows_matching_user": 249831,
+    "analytic_event_rows_after_privacy_join": 249831,
+    "excluded_event_rows": 50169,
+    "distinct_event_users_matching_user": 49690,
+    "duplicate_user_ad_pair_rows": 11909,
+    "behavior_distinct_users_matching_user": 31600,
+    "behavior_users_with_multiple_rows": 13183,
+    "train_events": 199891,
+    "test_events": 49940,
+    "constant_baseline": {
+      "n": 49940,
+      "positive_rate": 0.2514016820184221,
+      "roc_auc": 0.5,
+      "brier": 0.18820036550980856,
+      "log_loss": 0.5638737820100098,
+      "accuracy_at_0_5": 0.7485983179815779,
+      "precision_at_0_5": null,
+      "recall_at_0_5": 0.0
+    },
+    "regularized_logistic": {
+      "n": 49940,
+      "positive_rate": 0.2514016820184221,
+      "roc_auc": 0.49929460354379207,
+      "brier": 0.1882405576753063,
+      "log_loss": 0.5639821401319106,
+      "accuracy_at_0_5": 0.7485983179815779,
+      "precision_at_0_5": null,
+      "recall_at_0_5": 0.0
+    },
+    "row_export_and_overwrite_tests": "Default wrote no row CSVs. Optional private export matched retained and unknown-user counts. Rerun to the same output refused."
+  },
+  "romano_han": {
+    "v1_mae": 0.5207264325799725,
+    "training_mean_mae": 0.8145544731432657,
+    "v1_high_n": 126,
+    "v1_high_missed_at_5": 18,
+    "v2_high_missed_at_5": 25,
+    "v3_nominal_marginal_coverage": 0.9,
+    "v3_two_sided": {
+      "covered": 149,
+      "empirical_coverage": 0.8922155688622755,
+      "median_width": 2.342138992044804,
+      "mean_width": 2.192691793306414
+    },
+    "v3_upper": {
+      "upper_below_agreement_5": 19,
+      "observed_high_ge_5_with_upper_below_5": 6,
+      "observed_high_ge_5_n": 126,
+      "upper_covers_observed": 143,
+      "empirical_upper_coverage": 0.8562874251497006
+    }
+  },
+  "criteo_derived_sample": {
+    "test_rows": 39983,
+    "observed_auuc_gain_over_random": 0.0015791239237598204,
+    "row_bootstrap_95pct_interval_auuc_gain": [
+      -0.0006256726012756827,
+      0.0037844661653172397
+    ]
+  },
+  "historical_creative_diagnostic": {
+    "high_opinion_concern": {
+      "n": 30,
+      "low": 0,
+      "moderate": 0,
+      "high": 1,
+      "needs_review": 29,
+      "no_ocr_text": 0
+    },
+    "low_opinion_concern": {
+      "n": 30,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "needs_review": 30,
+      "no_ocr_text": 0
+    }
+  },
+  "synthetic_only": {
+    "train_consumers": 240,
+    "test_consumers": 60,
+    "metrics": {
+      "discomfort": {
+        "mae": 0.5122619940963413,
+        "rmse": 0.6665058147809547,
+        "baseline_mae": 0.7653786111111112,
+        "baseline_rmse": 0.9395222809063362,
+        "by_level": {
+          "L0": 0.3890720280498207,
+          "L1": 0.40863485073053923,
+          "L2": 0.5999067859240527,
+          "L3": 0.5772673678811489,
+          "L4": 0.5864289378961446
+        },
+        "high_n": 3,
+        "high_predicted_below_5": 2
+      },
+      "relevance": {
+        "mae": 0.6973620814118495,
+        "rmse": 0.8698134297879924,
+        "baseline_mae": 0.8326308333333334,
+        "baseline_rmse": 1.0292903041456931,
+        "by_level": {
+          "L0": 0.7559960881072726,
+          "L1": 0.7124425924768218,
+          "L2": 0.6708420030094465,
+          "L3": 0.708576607038358,
+          "L4": 0.6389531164273485
+        },
+        "high_n": 44,
+        "high_predicted_below_5": 28
+      }
+    }
+  },
+  "application_checks": {
+    "unittest_discover": {
+      "passed": 84,
+      "failed": 0,
+      "skipped": 0
+    },
+    "local_http_smoke_200": [
+      "GET /",
+      "GET /simulation",
+      "GET /research",
+      "GET /api/research",
+      "GET /api/simulation",
+      "POST /api/analyze"
+    ],
+    "environment_setup": "Fresh project venv, pinned pip install, pip check, npm ci and research compileall succeeded.",
+    "scope": "Local Linux workspace. No deployed app check or independent clean-machine end-to-end reproduction."
+  },
+  "unverified": {
+    "location_and_replication_crosscheck": "CLI help worked. Exact permitted replication inputs were unavailable.",
+    "surveillance": "CLI help worked. Exact archive and approved reuse terms were unavailable.",
+    "criteo_full_archive_preparation": "Official download returned HTTP 503, mirror redirects timed out and the historical Git LFS object returned 404. Derived sample model and ranking matched.",
+    "historical_creative_before_abstention": "Historical summary inspected. Its exact preceding rubric implementation and aggressive-image fixture were not replayed.",
+    "reviewed_manuscript": "Exact five-page second-review submission unavailable. Mapping and numerical comparisons against that version are pending."
+  }
+}

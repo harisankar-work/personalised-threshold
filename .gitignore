@@ -94,3 +94,22 @@ Thumbs.db
 !/test_vercel_routes.py
 
 !/.python-version
+
+# Reproducibility distribution: allow code and named aggregate evidence only.
+!/REPRODUCIBILITY.md
+!/research/
+/research/*
+!/research/DATA.md
+!/research/requirements-replay.txt
+!/research/compare_json.py
+!/research/analyses/
+/research/analyses/*
+!/research/analyses/*.py
+!/research/evidence/
+/research/evidence/*
+!/research/evidence/README.md
+!/research/evidence/audit.json
+!/research/evidence/associations.json
+!/research/evidence/external_creative_audit.json
+!/research/evidence/external_creative_audit_before_abstention.json
+!/research/evidence/replay_2026-11-26.json

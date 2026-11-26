@@ -4,6 +4,8 @@ A local web application for reviewing advertisements, exploring fictional consum
 
 **Reviewed source snapshot:** `49C-2026-11-23` (`release/49c-review-2026-11-23`). The [completion report](49C_FINAL_PROJECT_REPORT.md) carries the source snapshot identifier. Use the release ref below to reproduce this source snapshot. The live app at [kiwadoi.vercel.app](https://kiwadoi.vercel.app) was checked on 23 November 2026. It shows the newer Kiwadoi branding and copyright footer, while the pinned release still shows the older 49-C branding and snapshot footer, so the live app is not an exact match for the published source snapshot. The app page does not expose a deployed commit SHA. To reproduce the published snapshot, check out the release ref below. A README update does not deploy the app.
 
+See the [reproducibility guide](REPRODUCIBILITY.md) for research commands, dataset access, result provenance, and the current replay evidence.
+
 ## Project team
 
 Kiwadoi is the app name for this group academic project, maintained collaboratively in this shared repository.
@@ -33,7 +35,7 @@ The deployment upload is allowlisted by `.vercelignore` so local datasets, check
 
 ## Install and run
 
-You need Python, Node.js/npm, and a modern browser. The application was tested with Python 3.14.6 and Node.js 24 on Windows. Other environments have not been verified.
+You need Python, Node.js/npm, and a modern browser. The application was tested with Python 3.14.6 and Node.js 24 on Windows. The reproducibility guide documents a separate Linux check of the development baseline.
 
 ```powershell
 git clone --branch release/49c-review-2026-11-23 --single-branch https://github.com/harisankar-work/personalised-threshold.git
@@ -49,7 +51,7 @@ python marketer_app.py
 
 Open **http://127.0.0.1:8765/** if the browser does not open automatically. Keep the terminal running; press **Ctrl+C** to stop the server.
 
-On macOS/Linux, activate the environment with `source .venv/bin/activate` instead of the Windows activation command above. These platforms have not been tested.
+On macOS/Linux, activate the environment with `source .venv/bin/activate` instead of the Windows activation command above.
 
 To use a different port:
 
@@ -128,7 +130,6 @@ web/                           Campaign, simulation and research interfaces
 synthetic_demo/                Fictional data, generator and reproducible model
 results/                       Versioned aggregate experiment outputs
 test_*.py                      Regression tests
-final_browser_checks.cjs       Real Chrome demonstration checks
 ```
 
 The app serves `/`, `/simulation` and `/research`. JSON interfaces are `POST /api/analyze`, `GET /api/research`, and `GET` / `POST /api/simulation`. Image validation enforces supported types and size limits before OCR.
