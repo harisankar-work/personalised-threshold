@@ -1,0 +1,268 @@
+{
+  "version": "primary287_population_v2",
+  "levels": {
+    "L0": {
+      "n": 57,
+      "families": 2,
+      "mean": {
+        "intrusiveness_score": 2.1228070175438596,
+        "discomfort_score": 2.1228070175438596,
+        "relevance_score": 3.473684210526316,
+        "high_intrusion_ge5": 0.017543859649122806,
+        "high_discomfort_ge5": 0.03508771929824561
+      },
+      "rating_median": {
+        "intrusiveness_score": 2.0,
+        "discomfort_score": 2.0,
+        "relevance_score": 3.0
+      },
+      "family_rating_median_range": {
+        "intrusiveness_score": [
+          2.0,
+          2.0
+        ],
+        "discomfort_score": [
+          2.0,
+          2.0
+        ],
+        "relevance_score": [
+          3.0,
+          3.0
+        ]
+      },
+      "family_range": {
+        "intrusiveness_score": [
+          1.9642857142857142,
+          2.2758620689655173
+        ],
+        "discomfort_score": [
+          2.0,
+          2.25
+        ],
+        "relevance_score": [
+          3.4482758620689653,
+          3.5
+        ],
+        "high_intrusion_ge5": [
+          0.0,
+          0.034482758620689655
+        ],
+        "high_discomfort_ge5": [
+          0.0,
+          0.07142857142857142
+        ]
+      }
+    },
+    "L1": {
+      "n": 58,
+      "families": 2,
+      "mean": {
+        "intrusiveness_score": 2.793103448275862,
+        "discomfort_score": 2.6379310344827585,
+        "relevance_score": 4.672413793103448,
+        "high_intrusion_ge5": 0.017241379310344827,
+        "high_discomfort_ge5": 0.034482758620689655
+      },
+      "rating_median": {
+        "intrusiveness_score": 3.0,
+        "discomfort_score": 3.0,
+        "relevance_score": 5.0
+      },
+      "family_rating_median_range": {
+        "intrusiveness_score": [
+          3.0,
+          3.0
+        ],
+        "discomfort_score": [
+          2.0,
+          3.0
+        ],
+        "relevance_score": [
+          4.0,
+          5.0
+        ]
+      },
+      "family_range": {
+        "intrusiveness_score": [
+          2.7586206896551726,
+          2.8275862068965516
+        ],
+        "discomfort_score": [
+          2.586206896551724,
+          2.689655172413793
+        ],
+        "relevance_score": [
+          4.517241379310345,
+          4.827586206896552
+        ],
+        "high_intrusion_ge5": [
+          0.0,
+          0.034482758620689655
+        ],
+        "high_discomfort_ge5": [
+          0.034482758620689655,
+          0.034482758620689655
+        ]
+      }
+    },
+    "L2": {
+      "n": 52,
+      "families": 2,
+      "mean": {
+        "intrusiveness_score": 4.269230769230769,
+        "discomfort_score": 4.0576923076923075,
+        "relevance_score": 4.865384615384615,
+        "high_intrusion_ge5": 0.4807692307692308,
+        "high_discomfort_ge5": 0.3076923076923077
+      },
+      "rating_median": {
+        "intrusiveness_score": 4.0,
+        "discomfort_score": 4.0,
+        "relevance_score": 5.0
+      },
+      "family_rating_median_range": {
+        "intrusiveness_score": [
+          4.0,
+          4.5
+        ],
+        "discomfort_score": [
+          4.0,
+          4.0
+        ],
+        "relevance_score": [
+          5.0,
+          5.0
+        ]
+      },
+      "family_range": {
+        "intrusiveness_score": [
+          4.178571428571429,
+          4.375
+        ],
+        "discomfort_score": [
+          3.9583333333333335,
+          4.142857142857143
+        ],
+        "relevance_score": [
+          4.666666666666667,
+          5.035714285714286
+        ],
+        "high_intrusion_ge5": [
+          0.4642857142857143,
+          0.5
+        ],
+        "high_discomfort_ge5": [
+          0.20833333333333334,
+          0.39285714285714285
+        ]
+      }
+    },
+    "L3": {
+      "n": 54,
+      "families": 2,
+      "mean": {
+        "intrusiveness_score": 4.648148148148148,
+        "discomfort_score": 4.055555555555555,
+        "relevance_score": 5.277777777777778,
+        "high_intrusion_ge5": 0.5,
+        "high_discomfort_ge5": 0.42592592592592593
+      },
+      "rating_median": {
+        "intrusiveness_score": 4.5,
+        "discomfort_score": 4.0,
+        "relevance_score": 5.0
+      },
+      "family_rating_median_range": {
+        "intrusiveness_score": [
+          4.0,
+          5.0
+        ],
+        "discomfort_score": [
+          4.0,
+          4.5
+        ],
+        "relevance_score": [
+          5.0,
+          5.0
+        ]
+      },
+      "family_range": {
+        "intrusiveness_score": [
+          4.5,
+          4.785714285714286
+        ],
+        "discomfort_score": [
+          3.9615384615384617,
+          4.142857142857143
+        ],
+        "relevance_score": [
+          5.214285714285714,
+          5.346153846153846
+        ],
+        "high_intrusion_ge5": [
+          0.4230769230769231,
+          0.5714285714285714
+        ],
+        "high_discomfort_ge5": [
+          0.34615384615384615,
+          0.5
+        ]
+      }
+    },
+    "L4": {
+      "n": 55,
+      "families": 2,
+      "mean": {
+        "intrusiveness_score": 5.909090909090909,
+        "discomfort_score": 5.527272727272727,
+        "relevance_score": 4.618181818181818,
+        "high_intrusion_ge5": 0.8909090909090909,
+        "high_discomfort_ge5": 0.8727272727272727
+      },
+      "rating_median": {
+        "intrusiveness_score": 6.0,
+        "discomfort_score": 6.0,
+        "relevance_score": 5.0
+      },
+      "family_rating_median_range": {
+        "intrusiveness_score": [
+          6.0,
+          6.0
+        ],
+        "discomfort_score": [
+          6.0,
+          6.0
+        ],
+        "relevance_score": [
+          4.0,
+          5.0
+        ]
+      },
+      "family_range": {
+        "intrusiveness_score": [
+          5.785714285714286,
+          6.037037037037037
+        ],
+        "discomfort_score": [
+          5.444444444444445,
+          5.607142857142857
+        ],
+        "relevance_score": [
+          4.518518518518518,
+          4.714285714285714
+        ],
+        "high_intrusion_ge5": [
+          0.8888888888888888,
+          0.8928571428571429
+        ],
+        "high_discomfort_ge5": [
+          0.8518518518518519,
+          0.8928571428571429
+        ]
+      }
+    }
+  },
+  "source": "Primary survey population estimates",
+  "cutoff": 5,
+  "support": "Observed families only; family ranges are descriptive, not prediction intervals."
+}

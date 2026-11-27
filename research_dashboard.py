@@ -33,7 +33,9 @@ def dashboard_data() -> dict:
     independent = result("ad_blockers_intrusion_v1.json")
     vietnam = result("vietnam_privacy_trust_v1.json")
     status = current_dataset_status()
+    primary = result("primary287_v1.json")
     return {
+        "primary287": {key: primary[key] for key in ("scope", "eligible", "by_level", "abstention")},
         "scope": "Saved aggregate research results only; none of these models scores an uploaded ad.",
         "engagement": {
             "upad": {

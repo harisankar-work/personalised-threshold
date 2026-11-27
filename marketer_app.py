@@ -20,6 +20,7 @@ from pathlib import Path
 from intrusive_ad_model import predict
 from phase8_compatibility import assess as assess_compatibility
 from research_dashboard import dashboard_data
+from empirical_simulation import evaluate as empirical_compare
 from synthetic_simulation import evaluate as simulate, MODEL as SIMULATION_MODEL
 from stp_advisory import evaluate as evaluate_strategy, survey_personas
 
@@ -150,7 +151,12 @@ class Handler(BaseHTTPRequestHandler):
                 return
             payload = json.loads(self.rfile.read(length))
             if self.path == "/api/simulation":
-                self.send_json(HTTPStatus.OK, simulate(payload))
+                if not isinstance(payload, dict):
+                    raise ValueError("Send an object")
+                mode = payload.get("mode", "empirical")
+                if mode not in ("empirical", "synthetic"):
+                    raise ValueError("Unknown comparison mode")
+                self.send_json(HTTPStatus.OK, simulate(payload) if mode == "synthetic" else empirical_compare(payload))
                 return
             hosted_ocr = None
             corrected = None

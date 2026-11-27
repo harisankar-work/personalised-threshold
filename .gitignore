@@ -94,3 +94,10 @@ Thumbs.db
 !/test_vercel_routes.py
 
 !/.python-version
+
+!/primary287/
+!/empirical_simulation.py
+!/results/primary287*.json
+!/49C_*MODEL*.md
+!/49C_EMPIRICAL_OPTIMIZATION.md
+!/49C_FINAL_FEEDBACK_RESOLUTION.md

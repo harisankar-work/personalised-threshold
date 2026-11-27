@@ -30,3 +30,7 @@
 !requirements.txt
 !vercel.json
 !.python-version
+
+!empirical_simulation.py
+!results/primary287_v1.json
+!results/primary287_population_v2.json

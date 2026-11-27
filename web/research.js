@@ -3,6 +3,23 @@ const fixed = (value, places = 3) => Number(value).toFixed(places);
 const interval = (bounds, places = 3) => `[${fixed(bounds[0], places)}, ${fixed(bounds[1], places)}]`;
 
 function render(data) {
+  const primary = data.primary287;
+  if (primary) {
+    put("primary287-scope", `${primary.scope} ${primary.eligible} included exposures. ${primary.abstention}.`);
+    const rows = Object.entries(primary.by_level).map(([level, summary]) => {
+      const row = document.createElement("tr");
+      for (const value of [level, summary.n, ...[
+        "intrusiveness_score", "discomfort_score", "relevance_score",
+      ].map((field) => fixed(summary.means[field], 2))]) {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+        row.append(cell);
+      }
+      return row;
+    });
+    document.getElementById("primary287-rows").replaceChildren(...rows);
+    document.getElementById("primary287-panel").hidden = false;
+  }
   const upad = data.engagement.upad;
   put('upad-n', upad.holdout_n.toLocaleString());
   put('upad-base-auc', fixed(upad.constant_auc));
